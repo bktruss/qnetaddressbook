@@ -1,5 +1,12 @@
 #summary QNetAddressBook screenshots
+#labels Featured
 
 = Screenshots =
 
-Version 0.0.1
+== Version 0.0.1 ==
+
+=== MacOS X ===
+[http://qnetaddressbook.googlecode.com/svn/wiki/screenshots/qnetaddressbook-macosx.png]
+
+===X11 ===
+[http://qnetaddressbook.googlecode.com/svn/wiki/screenshots/qnetaddressbook-x11.png]
