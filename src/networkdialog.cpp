@@ -17,12 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <QPushButton>
+#include <QRegExp>
+#include <QRegExpValidator>
 #include "networkdialog.h"
 
 NetworkDialog::NetworkDialog( QWidget *parent) 
 	: QDialog(parent), Ui::NetworkDialog()
 {
+	QRegExp essidRegExp("[A-Za-z0-9]+");
+	QValidator *essidValidator = new QRegExpValidator(essidRegExp, this);
+
 	setupUi(this);
+
+	essidEdit->setValidator(essidValidator);	
+	bssidEdit->setInputMask("HH:HH:HH:HH:HH:HH");
+
+	connect(essidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
+	connect(bssidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
+	validate();
 }
 
 QString NetworkDialog::essid() const 
@@ -37,7 +50,7 @@ void NetworkDialog::setEssid(const QString &essid)
 
 QString NetworkDialog::bssid() const 
 {
-	return bssidEdit->text();
+	return bssidEdit->text().toUpper();
 }
 
 void NetworkDialog::setBssid(const QString &bssid)
@@ -105,3 +118,10 @@ void NetworkDialog::setComment(const QString &comment)
 	commentEdit->setPlainText(comment);
 }
 
+void NetworkDialog::validate()
+{
+	if (essidEdit->hasAcceptableInput() && bssidEdit->hasAcceptableInput())
+		buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
+	else
+		buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
+}

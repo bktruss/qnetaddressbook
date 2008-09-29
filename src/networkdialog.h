@@ -52,5 +52,8 @@ class NetworkDialog : public QDialog, public Ui::NetworkDialog
 	
 		QString comment() const;
 		void setComment(const QString &comment);
+	
+	private slots:
+		void validate();
 };
 #endif
