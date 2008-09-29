@@ -23,11 +23,23 @@
 #include <QDialog>
 #include "ui_networkdialog.h"
 
+typedef enum {
+	NoAction = 0,
+	SaveNetworkAction,
+	RemoveNetworkAction	
+} Purpose;
+
+typedef enum {
+	CreateMode = 0,
+	ModifyMode,
+} Mode;
+
 class NetworkDialog : public QDialog, public Ui::NetworkDialog
 {
 		Q_OBJECT
+		
 	public:
-		NetworkDialog(QWidget *parent = 0);
+		NetworkDialog(Mode mode, QWidget *parent = 0);
 		
 		QString essid() const;
 		void setEssid(const QString &essid);
@@ -53,7 +65,13 @@ class NetworkDialog : public QDialog, public Ui::NetworkDialog
 		QString comment() const;
 		void setComment(const QString &comment);
 	
+		Purpose purpose() const;
+		
 	private slots:
 		void validate();
+		void setPurpose(QAbstractButton *button);
+		
+	private:
+		Purpose m_purpose;
 };
 #endif
