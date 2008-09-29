@@ -18,11 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <QApplication>
+#include <QMessageBox>
 #include <QDir>
 #include <QFileDialog>
 #include <QKeySequence>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlError>
 
 #include "mapadapter.h"
 #include "googlemapadapter.h"
@@ -55,7 +57,10 @@ void MainWindow::newFile()
 	
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 	db.setDatabaseName(filename);
-	db.open(); // Error handling here
+	if(!db.open()){
+		QMessageBox::warning(this, db.lastError().driverText(), db.lastError().databaseText());
+		return;	
+	}
 		
 	db.transaction();	
 	QSqlQuery tableQuery;

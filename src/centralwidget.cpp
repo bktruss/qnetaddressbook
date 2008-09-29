@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QPen>
 #include <QColor>
+#include <QMessageBox>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QTextStream>
@@ -108,9 +109,10 @@ void CentralWidget::addNetwork()
 		writeQuery.bindValue(":longitude", dialog.longitude());
 		writeQuery.bindValue(":comment", dialog.comment());
 		writeQuery.bindValue(":encryption", dialog.encryption());
-		if(!writeQuery.exec())
-			return;	// Error handling here.
-			
+		if(!writeQuery.exec()){
+			QMessageBox::warning(this, writeQuery.lastError().driverText(), writeQuery.lastError().databaseText());			
+			return;
+		}
 		clearNetworks();
 		loadNetworks();
 	}
@@ -128,10 +130,14 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 	QSqlQuery query;
 	query.prepare("SELECT * from networks WHERE bssid=:bssid");
 	query.bindValue(":bssid", geometry->name());
-	if(!query.exec())
-		return; // Error handling here.
+	if(!query.exec()){
+		QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());			
+		return;
+	}
 
-	query.next();
+	if(!query.next())
+		return;
+		
 	NetworkDialog dialog(this);
 	dialog.setEssid(query.value(0).toString());
 	dialog.setBssid(query.value(1).toString());
@@ -154,8 +160,10 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 		writeQuery.bindValue(":comment", dialog.comment());
 		writeQuery.bindValue(":encryption", dialog.encryption());
 		writeQuery.bindValue(":bssidprev", geometry->name());
-		if(!writeQuery.exec())
-			return;	// Error handling here.
+		if(!writeQuery.exec()){
+			QMessageBox::warning(this, writeQuery.lastError().driverText(), writeQuery.lastError().databaseText());			
+			return;
+		}
 		clearNetworks();
 		loadNetworks();
 	}
@@ -193,7 +201,12 @@ void CentralWidget::importNetwork(const QString &line)
 	query.bindValue(":lat", fields.at(32));
 	query.bindValue(":lon", fields.at(33));
 	query.bindValue(":encryption", encryption);
-	query.exec(); // Error handling here		
+	if(!query.exec()){
+		if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows. 
+			QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
+			return;
+		}
+	}
 }
 
 void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name)
