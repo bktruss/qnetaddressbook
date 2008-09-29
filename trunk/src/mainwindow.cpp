@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <QApplication>
+#include <QDir>
 #include <QFileDialog>
 #include <QKeySequence>
 #include <QSqlDatabase>
@@ -45,10 +46,10 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 
 void MainWindow::newFile()
 {
-	QString filename = QFileDialog::getSaveFileName(this, tr("New Network Databse"), QString(), tr("Network Database (*.db)"));
+	QString filename = QFileDialog::getSaveFileName(this, tr("New Network Databse"), QDir::homePath() + QDir::separator() + tr("untitled.db"), tr("Network Database (*.db)"));
 	if(filename.isEmpty())
 		return;
-
+	
 	QSqlDatabase::database().close();
 	QSqlDatabase::removeDatabase("qt_sql_default_connection");
 	
@@ -72,7 +73,7 @@ void MainWindow::newFile()
 
 void MainWindow::openFile()
 {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet CSV File"), QString(), tr("Network Database (*.db)"));
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open Network Database File"), QString(), tr("Network Database (*.db)"));
 	if(filename.isEmpty())
 		return;
 	
