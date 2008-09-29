@@ -100,7 +100,7 @@ void CentralWidget::addNetwork()
 
 	if(dialog.exec()){
 		QSqlQuery writeQuery;
-		writeQuery.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,password,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:latitude,:longitude,:comment,:encryption)");	
+		writeQuery.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:latitude,:longitude,:comment,:encryption)");	
 		writeQuery.bindValue(":bssid", dialog.bssid());
 		writeQuery.bindValue(":essid", dialog.essid());
 		writeQuery.bindValue(":channel", dialog.channel());
