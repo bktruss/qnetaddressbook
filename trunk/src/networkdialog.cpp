@@ -22,17 +22,22 @@
 #include <QRegExpValidator>
 #include "networkdialog.h"
 
-NetworkDialog::NetworkDialog( QWidget *parent) 
+NetworkDialog::NetworkDialog(Mode mode, QWidget *parent) 
 	: QDialog(parent), Ui::NetworkDialog()
 {
+	m_purpose = NoAction;	
 	QRegExp essidRegExp("[A-Za-z0-9]+");
 	QValidator *essidValidator = new QRegExpValidator(essidRegExp, this);
 
 	setupUi(this);
-
+	QPushButton *removeButton = buttonBox->addButton(tr("Remove"), QDialogButtonBox::DestructiveRole);
+	if (mode == CreateMode)
+		removeButton->setEnabled(false);
+		
 	essidEdit->setValidator(essidValidator);	
 	bssidEdit->setInputMask("HH:HH:HH:HH:HH:HH");
 
+	connect(buttonBox, SIGNAL(clicked(QAbstractButton *)), this, SLOT(setPurpose(QAbstractButton *)));
 	connect(essidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
 	connect(bssidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
 	validate();
@@ -118,10 +123,31 @@ void NetworkDialog::setComment(const QString &comment)
 	commentEdit->setPlainText(comment);
 }
 
+Purpose NetworkDialog::purpose() const
+{
+	return m_purpose;
+}
+
 void NetworkDialog::validate()
 {
 	if (essidEdit->hasAcceptableInput() && bssidEdit->hasAcceptableInput())
 		buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
 	else
 		buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
+}
+
+void NetworkDialog::setPurpose(QAbstractButton *button)
+{
+	QDialogButtonBox::ButtonRole role = buttonBox->buttonRole(button);
+	switch(role){
+		case QDialogButtonBox::AcceptRole:
+			m_purpose = SaveNetworkAction;
+			break;
+		case QDialogButtonBox::DestructiveRole:
+			m_purpose = RemoveNetworkAction;
+			QDialog::accept();
+			break;
+		default:
+			m_purpose = NoAction;	
+	}
 }

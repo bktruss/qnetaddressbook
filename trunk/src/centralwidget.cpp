@@ -93,7 +93,7 @@ void CentralWidget::importNetworks(QIODevice &device)
 void CentralWidget::addNetwork()
 {
 	QPointF coordinate = control->currentCoordinate();
-	NetworkDialog dialog(this);
+	NetworkDialog dialog(CreateMode, this);
 	
 	dialog.setLatitude(coordinate.y());
 	dialog.setLongitude(coordinate.x());
@@ -138,7 +138,7 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 	if(!query.next())
 		return;
 		
-	NetworkDialog dialog(this);
+	NetworkDialog dialog(ModifyMode, this);
 	dialog.setEssid(query.value(0).toString());
 	dialog.setBssid(query.value(1).toString());
 	dialog.setChannel(query.value(2).toInt());
@@ -150,16 +150,28 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 	
 	if(dialog.exec()){
 		QSqlQuery writeQuery;
-		writeQuery.prepare("UPDATE networks SET essid=:essid, bssid=:bssid, channel=:channel, signal=:signal, lat=:latitude, lon=:longitude, comment=:comment, encryption=:encryption WHERE bssid=:bssidprev");	
-		writeQuery.bindValue(":bssid", dialog.bssid());
-		writeQuery.bindValue(":essid", dialog.essid());
-		writeQuery.bindValue(":channel", dialog.channel());
-		writeQuery.bindValue(":signal", dialog.signal());
-		writeQuery.bindValue(":latitude", dialog.latitude());
-		writeQuery.bindValue(":longitude", dialog.longitude());
-		writeQuery.bindValue(":comment", dialog.comment());
-		writeQuery.bindValue(":encryption", dialog.encryption());
-		writeQuery.bindValue(":bssidprev", geometry->name());
+		Purpose purpose = dialog.purpose();
+		switch(purpose){
+			case SaveNetworkAction:
+				writeQuery.prepare("UPDATE networks SET essid=:essid, bssid=:bssid, channel=:channel, signal=:signal, lat=:latitude, lon=:longitude, comment=:comment, encryption=:encryption WHERE bssid=:bssidprev");	
+				writeQuery.bindValue(":bssid", dialog.bssid());
+				writeQuery.bindValue(":essid", dialog.essid());
+				writeQuery.bindValue(":channel", dialog.channel());
+				writeQuery.bindValue(":signal", dialog.signal());
+				writeQuery.bindValue(":latitude", dialog.latitude());
+				writeQuery.bindValue(":longitude", dialog.longitude());
+				writeQuery.bindValue(":comment", dialog.comment());
+				writeQuery.bindValue(":encryption", dialog.encryption());
+				writeQuery.bindValue(":bssidprev", geometry->name());
+				break;
+			case RemoveNetworkAction:
+				writeQuery.prepare("DELETE FROM networks WHERE bssid=:bssid");
+				writeQuery.bindValue(":bssid", query.value(1).toString());
+				break;
+				
+			case NoAction:
+				return;
+		}
 		if(!writeQuery.exec()){
 			QMessageBox::warning(this, writeQuery.lastError().driverText(), writeQuery.lastError().databaseText());			
 			return;
