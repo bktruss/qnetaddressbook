@@ -89,11 +89,10 @@ void CentralWidget::importNetworks(QIODevice &device)
 	loadNetworks();	
 }
 
-// TODO: Do not permit to insert empty networks!
 void CentralWidget::addNetwork()
 {
 	QPointF coordinate = control->currentCoordinate();
-	NetworkDialog dialog(CreateMode, this);
+	NetworkDialog dialog(NetworkDialog::CreateMode, this);
 	
 	dialog.setLatitude(coordinate.y());
 	dialog.setLongitude(coordinate.x());
@@ -138,7 +137,7 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 	if(!query.next())
 		return;
 		
-	NetworkDialog dialog(ModifyMode, this);
+	NetworkDialog dialog(NetworkDialog::ModifyMode, this);
 	dialog.setEssid(query.value(0).toString());
 	dialog.setBssid(query.value(1).toString());
 	dialog.setChannel(query.value(2).toInt());
@@ -150,9 +149,9 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 	
 	if(dialog.exec()){
 		QSqlQuery writeQuery;
-		Purpose purpose = dialog.purpose();
+		NetworkDialog::Purpose purpose = dialog.purpose();
 		switch(purpose){
-			case SaveNetworkAction:
+			case NetworkDialog::SaveNetworkAction:
 				writeQuery.prepare("UPDATE networks SET essid=:essid, bssid=:bssid, channel=:channel, signal=:signal, lat=:latitude, lon=:longitude, comment=:comment, encryption=:encryption WHERE bssid=:bssidprev");	
 				writeQuery.bindValue(":bssid", dialog.bssid());
 				writeQuery.bindValue(":essid", dialog.essid());
@@ -164,12 +163,12 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 				writeQuery.bindValue(":encryption", dialog.encryption());
 				writeQuery.bindValue(":bssidprev", geometry->name());
 				break;
-			case RemoveNetworkAction:
+			case NetworkDialog::RemoveNetworkAction:
 				writeQuery.prepare("DELETE FROM networks WHERE bssid=:bssid");
 				writeQuery.bindValue(":bssid", query.value(1).toString());
 				break;
 				
-			case NoAction:
+			case NetworkDialog::NoAction:
 				return;
 		}
 		if(!writeQuery.exec()){

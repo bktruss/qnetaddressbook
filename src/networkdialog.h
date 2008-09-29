@@ -23,22 +23,22 @@
 #include <QDialog>
 #include "ui_networkdialog.h"
 
-typedef enum {
-	NoAction = 0,
-	SaveNetworkAction,
-	RemoveNetworkAction	
-} Purpose;
-
-typedef enum {
-	CreateMode = 0,
-	ModifyMode,
-} Mode;
-
 class NetworkDialog : public QDialog, public Ui::NetworkDialog
 {
 		Q_OBJECT
-		
+
 	public:
+		typedef enum {
+			NoAction = 0,
+			SaveNetworkAction,
+			RemoveNetworkAction	
+		} Purpose;
+
+		typedef enum {
+			CreateMode = 0,
+			ModifyMode,
+		} Mode;
+		
 		NetworkDialog(Mode mode, QWidget *parent = 0);
 		
 		QString essid() const;

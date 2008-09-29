@@ -123,7 +123,7 @@ void NetworkDialog::setComment(const QString &comment)
 	commentEdit->setPlainText(comment);
 }
 
-Purpose NetworkDialog::purpose() const
+NetworkDialog::Purpose NetworkDialog::purpose() const
 {
 	return m_purpose;
 }

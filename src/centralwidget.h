@@ -27,18 +27,19 @@
 
 using namespace qmapcontrol;
 
-typedef enum {
-	None = 0,
-	WEP,
-	WPA,
-	WPA2
-} NetworkEncryption;
-
 class QIODevice;
 class CentralWidget : public QWidget
 {
 		Q_OBJECT
+	
 	public:
+		typedef enum {
+			None = 0,
+			WEP,
+			WPA,
+			WPA2
+		} NetworkEncryption;	
+	
 		CentralWidget(QWidget *parent = 0);
 		/* Load Database */
 		void loadNetworks();
