@@ -17,18 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QApplication>
-#include "mainwindow.h"
-//
-int main(int argc, char ** argv)
+#ifndef __PREFERENCESPAGE_H__
+#define __PREFERENCESPAGE_H__
+
+#include <QWidget>
+#include <QSettings>
+
+class PreferencesPage : public QWidget
 {
-	QCoreApplication::setOrganizationName("qnetaddressbook");
-	QCoreApplication::setOrganizationDomain("googlecode.com");
-    QCoreApplication::setApplicationName("QNetAddressBook");	
+		Q_OBJECT
+		
+	public:
+		PreferencesPage(QWidget *parent = 0);
+				
+		virtual void applyChanges() = 0;
+		virtual void restoreDefaults() = 0;
 	
-	QApplication app( argc, argv );
-	MainWindow win;
-	win.show(); 
-	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
-	return app.exec();
-}
+	signals:
+		void settingsChanged();
+		
+	protected:		
+		QSettings settings;
+};
+
+#endif 

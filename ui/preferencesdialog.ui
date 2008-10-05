@@ -1,0 +1,126 @@
+<ui version="4.0" >
+ <class>PreferencesDialog</class>
+ <widget class="QDialog" name="PreferencesDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>398</width>
+    <height>91</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Preferences</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="ViewPreferencesPage" name="viewTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>368</width>
+        <height>12</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>View</string>
+      </attribute>
+     </widget>
+     <widget class="CachePreferencesPage" name="cacheTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>428</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Cache</string>
+      </attribute>
+     </widget>
+     <widget class="ProxyPreferencesPage" name="proxyTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>428</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Proxy</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ProxyPreferencesPage</class>
+   <extends>QWidget</extends>
+   <header>proxypreferencespage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CachePreferencesPage</class>
+   <extends>QWidget</extends>
+   <header>cachepreferencespage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ViewPreferencesPage</class>
+   <extends>QWidget</extends>
+   <header>viewpreferencespage.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>PreferencesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>353</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>408</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PreferencesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>325</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>406</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -17,18 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QApplication>
-#include "mainwindow.h"
-//
-int main(int argc, char ** argv)
+#ifndef PROXYPREFERENCESPAGE_H
+#define PROXYPREFERENCESPAGE_H
+
+#include "preferencespage.h"
+#include "ui_proxypreferencespage.h"
+
+class ProxyPreferencesPage : virtual public PreferencesPage, public Ui::ProxyPreferencesPage
 {
-	QCoreApplication::setOrganizationName("qnetaddressbook");
-	QCoreApplication::setOrganizationDomain("googlecode.com");
-    QCoreApplication::setApplicationName("QNetAddressBook");	
-	
-	QApplication app( argc, argv );
-	MainWindow win;
-	win.show(); 
-	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
-	return app.exec();
-}
+		Q_OBJECT
+	public:
+		ProxyPreferencesPage(QWidget *parent = 0);
+
+		void applyChanges();
+		void restoreDefaults();	
+};
+#endif

@@ -33,7 +33,7 @@
 
 #include "mainwindow.h"
 #include "centralwidget.h"
-
+#include "preferencesdialog.h"
 
 MainWindow::MainWindow( QWidget * parent, Qt::WFlags f) 
 	: QMainWindow(parent, f)
@@ -113,6 +113,12 @@ void MainWindow::importFile()
 	file.close();
 }
 
+void MainWindow::showPreferencesDialog()
+{
+	PreferencesDialog dialog(this);
+	dialog.exec();
+}
+
 void MainWindow::showAbout()
 {
 	QMessageBox::about(this, tr("About NetAddressBook"), tr("<h1>NetAddressBook "VERSION"</h1>"
@@ -150,15 +156,18 @@ void MainWindow::setupActions()
 	actionAddNetwork->setStatusTip(tr("Adds a network in the centre of the map"));
 	connect(actionAddNetwork, SIGNAL(triggered()), w, SLOT(addNetwork()));
 	
+	actionPreferences->setStatusTip(tr("Opens preferences dialog"));
+	connect(actionPreferences, SIGNAL(triggered()), this, SLOT(showPreferencesDialog()));
+	
+	/* View */
 	actionZoomIn->setStatusTip(tr("Zooms in the map"));
 	actionZoomIn->setShortcut(QKeySequence(QKeySequence::ZoomIn));
 	connect(actionZoomIn, SIGNAL(triggered()), w, SLOT(zoomIn()));
 	
 	actionZoomOut->setStatusTip(tr("Zooms out the map"));
 	actionZoomOut->setShortcut(QKeySequence(QKeySequence::ZoomOut));
-	connect(actionZoomOut, SIGNAL(triggered()), w, SLOT(zoomOut()));	
+	connect(actionZoomOut, SIGNAL(triggered()), w, SLOT(zoomOut()));		
 	
-	/* View */
 	actionOpenNetworks->setStatusTip(tr("Shows/Hides Open Networks"));	
 	connect(actionOpenNetworks, SIGNAL(toggled(bool)), w, SLOT(setVisibleOpenNetworks(bool)));
 
