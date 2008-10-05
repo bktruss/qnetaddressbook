@@ -17,18 +17,34 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QApplication>
-#include "mainwindow.h"
-//
-int main(int argc, char ** argv)
+#include "proxypreferencespage.h"
+
+ProxyPreferencesPage::ProxyPreferencesPage( QWidget *parent) 
+	: PreferencesPage(parent), Ui::ProxyPreferencesPage()
 {
-	QCoreApplication::setOrganizationName("qnetaddressbook");
-	QCoreApplication::setOrganizationDomain("googlecode.com");
-    QCoreApplication::setApplicationName("QNetAddressBook");	
+	setupUi(this);
+	groupBox->setChecked(settings.value("settings/proxy_enabled", false).toBool());
+	addressEdit->setText(settings.value("settings/proxy_address", QString()).toString());
+	portSpin->setValue(settings.value("settings/proxy_port", 3829).toInt());
 	
-	QApplication app( argc, argv );
-	MainWindow win;
-	win.show(); 
-	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
-	return app.exec();
+	connect(addressEdit, SIGNAL(textChanged(const QString &)), this, SIGNAL(settingsChanged()));
+	connect(portSpin, SIGNAL(valueChanged(int)), this, SIGNAL(settingsChanged()));
+}
+
+void ProxyPreferencesPage::applyChanges()
+{
+	settings.setValue("settings/proxy_enabled", groupBox->isChecked());
+	settings.setValue("settings/proxy_address", addressEdit->text());
+	settings.setValue("settings/proxy_port", portSpin->value());	
+}
+
+void ProxyPreferencesPage::restoreDefaults()
+{
+	settings.setValue("settings/proxy_enabled", false);
+	settings.setValue("settings/proxy_address", QString());
+	settings.setValue("settings/proxy_port", 3829);
+
+	groupBox->setChecked(settings.value("settings/proxy_enabled", false).toBool());
+	addressEdit->setText(settings.value("settings/proxy_address", QString()).toString());
+	portSpin->setValue(settings.value("settings/proxy_port", 3829).toInt());
 }

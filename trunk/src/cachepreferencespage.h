@@ -17,18 +17,23 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QApplication>
-#include "mainwindow.h"
-//
-int main(int argc, char ** argv)
+#ifndef CACHEPREFERENCESPAGE_H
+#define CACHEPREFERENCESPAGE_H
+
+#include "preferencespage.h"
+#include "ui_cachepreferencespage.h"
+
+class CachePreferencesPage : virtual public PreferencesPage, public Ui::CachePreferencesPage
 {
-	QCoreApplication::setOrganizationName("qnetaddressbook");
-	QCoreApplication::setOrganizationDomain("googlecode.com");
-    QCoreApplication::setApplicationName("QNetAddressBook");	
-	
-	QApplication app( argc, argv );
-	MainWindow win;
-	win.show(); 
-	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
-	return app.exec();
-}
+		Q_OBJECT
+
+	public:
+		CachePreferencesPage(QWidget *parent = 0);
+		
+		void applyChanges();
+		void restoreDefaults();
+		
+	private slots:
+		void chooseDirectory();
+};
+#endif

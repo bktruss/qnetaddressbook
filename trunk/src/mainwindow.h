@@ -35,7 +35,9 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 		void openFile();
 		void closeFile();
 		void importFile();
+		void showPreferencesDialog();
 		void showAbout();
+		
 	private:
 		void setupActions();
 		void setActionsEnabled(bool enabled);

@@ -25,6 +25,7 @@
 #include <QSqlError>
 #include <QTextStream>
 #include <QIODevice>
+#include <QDir>
 #include <QStringList>
 
 #include "centralwidget.h"
@@ -39,8 +40,9 @@
 CentralWidget::CentralWidget( QWidget *parent ) 
 	: QWidget(parent)
 {
+	QSettings settings;
+	
 	control = new MapControl(QSize(600, 600));
-	control->enablePersistentCache();
 	adapter = new GoogleMapAdapter();
 	base = new MapLayer("base", adapter);
 	control->addLayer(base);
@@ -52,15 +54,23 @@ CentralWidget::CentralWidget( QWidget *parent )
 	
 	for(int i = 0; i<=3; i++)
 		control->addLayer(layers[i]);
-
-	/* Initial view */
-	control->setView(QPointF(0,0));
-	control->setZoom(2);
 	
 	QGridLayout *layout = new QGridLayout(this);
 	layout->addWidget(control, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
 	setLayout(layout);
 	control->setMinimumSize(QSize(601,601));
+
+	/* Cache */
+	if(settings.value("settings/cache_enabled", false).toBool())
+		control->enablePersistentCache(settings.value("settings/cache_dir", QDir::homePath() + "/QMapControl.cache").toString());
+	
+	/* Proxy */
+	if(settings.value("settings/proxy_enabled", false).toBool())
+		control->setProxy(settings.value("settings/proxy_address", QString()).toString(), settings.value("settings/proxy_port", 3829).toInt());
+
+	/* View */
+	control->setView(QPointF(settings.value("settings/view_lat", 0.0).toDouble(), settings.value("settings/view_lon", 0.0).toDouble()));
+	control->setZoom(settings.value("settings/view_zoom", 2).toInt());
 }
 
 void CentralWidget::loadNetworks()

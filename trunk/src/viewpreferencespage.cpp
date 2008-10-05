@@ -17,18 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QApplication>
-#include "mainwindow.h"
-//
-int main(int argc, char ** argv)
+#include "viewpreferencespage.h"
+
+ViewPreferencesPage::ViewPreferencesPage( QWidget *parent ) 
+	: PreferencesPage(parent), Ui::ViewPreferencesPage()
 {
-	QCoreApplication::setOrganizationName("qnetaddressbook");
-	QCoreApplication::setOrganizationDomain("googlecode.com");
-    QCoreApplication::setApplicationName("QNetAddressBook");	
+	setupUi(this);
 	
-	QApplication app( argc, argv );
-	MainWindow win;
-	win.show(); 
-	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
-	return app.exec();
+	lonSpin->setValue(settings.value("settings/view_lon", 0.0).toDouble());
+	latSpin->setValue(settings.value("settings/view_lat", 0.0).toDouble());
+	zoomSpin->setValue(settings.value("settings/view_zoom", 2).toInt());
+	
+	connect(lonSpin, SIGNAL(valueChanged(double)), this, SIGNAL(settingsChanged()));
+	connect(latSpin, SIGNAL(valueChanged(double)), this, SIGNAL(settingsChanged()));
+	connect(zoomSpin, SIGNAL(valueChanged(int)), this, SIGNAL(settingsChanged()));
+}
+
+void ViewPreferencesPage::applyChanges()
+{
+	settings.setValue("settings/view_lon", lonSpin->value());
+	settings.setValue("settings/view_lat", latSpin->value());
+	settings.setValue("settings/view_zoom", zoomSpin->value());		
+}
+
+void ViewPreferencesPage::restoreDefaults()
+{
+	settings.setValue("settings/view_lon", 0.0);
+	settings.setValue("settings/view_lat", 0.0);
+	settings.setValue("settings/view_zoom", 2);		
+	
+	lonSpin->setValue(settings.value("settings/view_lon", 0.0).toDouble());
+	latSpin->setValue(settings.value("settings/view_lat", 0.0).toDouble());
+	zoomSpin->setValue(settings.value("settings/view_zoom", 2).toInt());
 }

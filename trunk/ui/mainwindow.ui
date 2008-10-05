@@ -53,6 +53,8 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="actionAddNetwork" />
+    <addaction name="separator" />
+    <addaction name="actionPreferences" />
    </widget>
    <widget class="QMenu" name="menuF_ilter" >
     <property name="title" >
@@ -294,6 +296,15 @@
    </property>
    <property name="text" >
     <string>Close</string>
+   </property>
+  </action>
+  <action name="actionPreferences" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/preferences_system.png</normaloff>:/images/preferences_system.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Preferences...</string>
    </property>
   </action>
  </widget>

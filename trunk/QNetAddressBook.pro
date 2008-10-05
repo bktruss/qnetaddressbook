@@ -8,17 +8,10 @@ MOC_DIR = build
 OBJECTS_DIR = build
 RCC_DIR = build
 UI_DIR = build
-
-VERSIONSTR = '\\"$${VERSION}\\"'
+VERSIONSTR = '\\"$${VERSION}\\" '
 DEFINES += VERSION=\"$${VERSIONSTR}\"
-
-DEPENDPATH += QMapControl \
- resources \
- src \
- ui
-
+DEPENDPATH += QMapControl resources src ui
 INCLUDEPATH += QMapControl src
-
 HEADERS += QMapControl/circlepoint.h \
  QMapControl/curve.h \
  QMapControl/geometry.h \
@@ -42,8 +35,12 @@ HEADERS += QMapControl/circlepoint.h \
  QMapControl/yahoomapadapter.h \
  src/mainwindow.h \
  src/centralwidget.h \
- src/networkdialog.h
-
+ src/networkdialog.h \
+ src/preferencespage.h \
+ src/proxypreferencespage.h \
+ src/cachepreferencespage.h \
+ src/viewpreferencespage.h \
+ src/preferencesdialog.h
 SOURCES += QMapControl/circlepoint.cpp \
  QMapControl/curve.cpp \
  QMapControl/geometry.cpp \
@@ -68,9 +65,16 @@ SOURCES += QMapControl/circlepoint.cpp \
  src/main.cpp \
  src/mainwindow.cpp \
  src/centralwidget.cpp \
- src/networkdialog.cpp
- 
-FORMS += ui/mainwindow.ui ui/networkdialog.ui
-
+ src/networkdialog.cpp \
+ src/preferencespage.cpp \
+ src/proxypreferencespage.cpp \
+ src/cachepreferencespage.cpp \
+ src/viewpreferencespage.cpp \
+ src/preferencesdialog.cpp
+FORMS += ui/mainwindow.ui \
+ ui/networkdialog.ui \
+ ui/proxypreferencespage.ui \
+ ui/cachepreferencespage.ui \
+ ui/viewpreferencespage.ui \
+ ui/preferencesdialog.ui
 RESOURCES += resources/resources.qrc
-
