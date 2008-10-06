@@ -24,6 +24,7 @@
 #include "ui_mainwindow.h"
 
 class CentralWidget;
+class QLabel;
 class MainWindow : public QMainWindow, public Ui::MainWindow
 {
 		Q_OBJECT
@@ -37,11 +38,13 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 		void importFile();
 		void showPreferencesDialog();
 		void showAbout();
+		void updateStatusBar(const QPointF &coordinate, int zoom);
 		
 	private:
 		void setupActions();
 		void setActionsEnabled(bool enabled);
 		CentralWidget *w;
+		QLabel *statusLabel;
 };
 #endif
 

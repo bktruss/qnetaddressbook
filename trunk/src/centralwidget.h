@@ -72,7 +72,10 @@ class CentralWidget : public QWidget
 		void showNetwork(Geometry *geometry, QPoint point);
 		void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
 		void importNetwork(const QString &line);
-	
+
+	signals:
+		void viewChanged(const QPointF &coordinate, int zoom);
+			
 	private:
 		void addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name);
 		
