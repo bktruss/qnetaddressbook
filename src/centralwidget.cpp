@@ -134,6 +134,14 @@ void CentralWidget::clearNetworks()
 	control->updateRequestNew();
 }
 
+void CentralWidget::goHome()
+{
+	QSettings settings;
+	
+	control->moveTo(QPointF(settings.value("settings/view_lon", 0.0).toDouble(), settings.value("settings/view_lat", 0.0).toDouble()));
+	control->setZoom(settings.value("settings/view_zoom", 2).toInt());
+}
+
 void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 {
 	QSqlQuery query;

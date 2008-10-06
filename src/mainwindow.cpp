@@ -180,6 +180,11 @@ void MainWindow::setupActions()
 	actionWPA2Networks->setStatusTip(tr("Shows/Hides WPA2 Encrypted Networks"));
 	connect(actionWPA2Networks, SIGNAL(toggled(bool)), w, SLOT(setVisibleWPA2Networks(bool)));
 	
+	/* Go */
+	actionGoHome->setStatusTip(tr("Changes coordinates/zoom to the initial ones"));
+	actionGoHome->setShortcut(QKeySequence("Ctrl+h"));
+	connect(actionGoHome, SIGNAL(triggered()), w, SLOT(goHome()));
+	
 	/* Help */
 	actionAbout->setStatusTip(tr("Shows the about dialog"));
 	connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
