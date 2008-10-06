@@ -69,7 +69,7 @@ CentralWidget::CentralWidget( QWidget *parent )
 		control->setProxy(settings.value("settings/proxy_address", QString()).toString(), settings.value("settings/proxy_port", 3829).toInt());
 
 	/* View */
-	control->setView(QPointF(settings.value("settings/view_lat", 0.0).toDouble(), settings.value("settings/view_lon", 0.0).toDouble()));
+	control->setView(QPointF(settings.value("settings/view_lon", 0.0).toDouble(), settings.value("settings/view_lat", 0.0).toDouble()));
 	control->setZoom(settings.value("settings/view_zoom", 2).toInt());
 }
 
