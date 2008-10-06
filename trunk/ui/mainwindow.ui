@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>414</height>
+    <width>627</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -21,8 +21,8 @@
     <rect>
      <x>0</x>
      <y>66</y>
-     <width>556</width>
-     <height>326</height>
+     <width>627</width>
+     <height>325</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" />
@@ -32,7 +32,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>556</width>
+     <width>627</width>
      <height>22</height>
     </rect>
    </property>
@@ -74,17 +74,24 @@
     </property>
     <addaction name="actionAbout" />
    </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>Go</string>
+    </property>
+    <addaction name="actionGoHome" />
+   </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Edit" />
    <addaction name="menuF_ilter" />
+   <addaction name="menuGo" />
    <addaction name="menu_Help" />
   </widget>
   <widget class="QStatusBar" name="statusbar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>392</y>
-     <width>556</width>
+     <y>391</y>
+     <width>627</width>
      <height>22</height>
     </rect>
    </property>
@@ -131,12 +138,32 @@
    </attribute>
    <addaction name="actionAddNetwork" />
   </widget>
-  <widget class="QToolBar" name="viewToolBar" >
+  <widget class="QToolBar" name="goToolBar" >
    <property name="geometry" >
     <rect>
      <x>210</x>
      <y>22</y>
-     <width>346</width>
+     <width>59</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="windowTitle" >
+    <string>Go</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionGoHome" />
+  </widget>
+  <widget class="QToolBar" name="viewToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>269</x>
+     <y>22</y>
+     <width>358</width>
      <height>44</height>
     </rect>
    </property>
@@ -305,6 +332,15 @@
    </property>
    <property name="text" >
     <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="actionGoHome" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/folder_home2.png</normaloff>:/images/folder_home2.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Home</string>
    </property>
   </action>
  </widget>

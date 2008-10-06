@@ -63,7 +63,10 @@ class CentralWidget : public QWidget
 		/* Zoom */
 		void zoomIn() {control->zoomIn();}
 		void zoomOut() { control->zoomOut();}
-	
+		
+		/* View */
+		void goHome();
+		
 	private slots:
 		/* Real methods to do things*/
 		void showNetwork(Geometry *geometry, QPoint point);
