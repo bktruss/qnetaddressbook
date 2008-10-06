@@ -27,6 +27,7 @@ int main(int argc, char ** argv)
     QCoreApplication::setApplicationName("QNetAddressBook");	
 	
 	QApplication app( argc, argv );
+	app.setWindowIcon(QIcon(":/images/icon.png"));
 	MainWindow win;
 	win.show(); 
 	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
