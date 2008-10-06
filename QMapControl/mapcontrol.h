@@ -271,6 +271,8 @@ namespace qmapcontrol
 		 */
 			void geometryClicked(Geometry* geometry, QPoint coord_px);
 		
+			void viewChanged(const QPointF &coordinates, int zoom);		
+			
 		public slots:
 		//! zooms in one step
 			void zoomIn();

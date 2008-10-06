@@ -43,8 +43,11 @@ CentralWidget::CentralWidget( QWidget *parent )
 	QSettings settings;
 	
 	control = new MapControl(QSize(600, 600));
+	connect(control, SIGNAL(viewChanged(const QPointF &, int)), this, SIGNAL(viewChanged(const QPointF &, int)));	
+	
 	adapter = new GoogleMapAdapter();
 	base = new MapLayer("base", adapter);
+	
 	control->addLayer(base);
 	
 	layers[None] = new GeometryLayer("None", adapter);
