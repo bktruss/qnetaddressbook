@@ -43,7 +43,7 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 	w = new CentralWidget(this);
 	this->setCentralWidget(w);	
 	
-	statusLabel = new QLabel(tr("Lon: ###.#### Lat: ##.#### Zoom: ##"), this);
+	statusLabel = new QLabel(tr("Lon: ###.###### Lat: ##.###### Zoom: ##"), this);
 	statusLabel->setMinimumSize(statusLabel->sizeHint());	
 	this->statusBar()->addPermanentWidget(statusLabel);
 	
@@ -139,7 +139,7 @@ void MainWindow::showAbout()
 
 void MainWindow::updateStatusBar(const QPointF &coordinate, int zoom)
 {
-	statusLabel->setText(tr("Lon: %1 Lat: %2 Zoom: %3").arg(coordinate.x(), 0, 'f', 4).arg(coordinate.y(), 0, 'f', 4).arg(17 - zoom));	
+	statusLabel->setText(tr("Lon: %1 Lat: %2 Zoom: %3").arg(coordinate.x(), 0, 'f', 6).arg(coordinate.y(), 0, 'f', 6).arg(17 - zoom));	
 }
 
 void MainWindow::setupActions()
