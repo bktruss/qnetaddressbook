@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = QNetAddressBook
 VERSION = 0.0.1
-CONFIG += release warn_on
-QT += network sql
+CONFIG += release warn_on qt
+QT += network sql core
 DESTDIR = bin
 MOC_DIR = build
 OBJECTS_DIR = build
@@ -78,3 +78,6 @@ FORMS += ui/mainwindow.ui \
  ui/viewpreferencespage.ui \
  ui/preferencesdialog.ui
 RESOURCES += resources/resources.qrc
+mac {
+ ICON =  resources/images/icon.icns
+}

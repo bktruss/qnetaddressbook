@@ -51,6 +51,9 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 	
 	setupActions();
 	setActionsEnabled(false);
+#ifdef Q_WS_MAC
+	setUnifiedTitleAndToolBarOnMac(true);
+#endif
 }
 
 void MainWindow::newFile()
