@@ -29,7 +29,7 @@
 #include <QStringList>
 
 #include "centralwidget.h"
-#include "googlemapadapter.h"
+#include "osmmapadapter.h"
 #include "maplayer.h"
 #include "geometrylayer.h"
 #include "geometry.h"
@@ -45,7 +45,7 @@ CentralWidget::CentralWidget( QWidget *parent )
 	control = new MapControl(QSize(600, 600));
 	connect(control, SIGNAL(viewChanged(const QPointF &, int)), this, SIGNAL(viewChanged(const QPointF &, int)));	
 	
-	adapter = new GoogleMapAdapter();
+	adapter = new OSMMapAdapter();
 	base = new MapLayer("base", adapter);
 	
 	control->addLayer(base);
