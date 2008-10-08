@@ -31,6 +31,9 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 	public:
 		MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
 	
+	protected:
+		void closeEvent(QCloseEvent *event);
+		
 	private slots:
 		void newFile();
 		void openFile();
