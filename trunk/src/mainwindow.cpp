@@ -17,7 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QApplication>
 #include <QMessageBox>
 #include <QDir>
 #include <QFileDialog>
@@ -54,6 +53,12 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 #ifdef Q_WS_MAC
 	setUnifiedTitleAndToolBarOnMac(true);
 #endif
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	closeFile();
+	QMainWindow::closeEvent(event);	
 }
 
 void MainWindow::newFile()
@@ -165,7 +170,7 @@ void MainWindow::setupActions()
 	
 	actionQuit->setStatusTip(tr("Quits the application"));
 	actionQuit->setShortcut(QKeySequence("Ctrl+Q"));
-	connect(actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	connect(actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 	
 	/* Edit */
 	actionAddNetwork->setStatusTip(tr("Adds a network in the centre of the map"));
