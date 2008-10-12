@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 		void setupActions();
 		void setActionsEnabled(bool enabled);
 		CentralWidget *w;
-		QLabel *statusLabel;
+		QVector<QLabel*> statusLabel;
 };
 #endif
 
