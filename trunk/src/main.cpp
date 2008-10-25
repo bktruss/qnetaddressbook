@@ -19,6 +19,9 @@
  ***************************************************************************/
 #include <QApplication>
 #include "mainwindow.h"
+#ifdef Q_WS_MAC
+#include <QDir>
+#endif
 //
 int main(int argc, char ** argv)
 {
@@ -27,6 +30,12 @@ int main(int argc, char ** argv)
     QCoreApplication::setApplicationName("QNetAddressBook");	
 	
 	QApplication app( argc, argv );
+#ifdef Q_WS_MAC
+	QDir dir(QApplication::applicationDirPath());
+    dir.cdUp();
+    dir.cd("plugins");
+    QApplication::setLibraryPaths(QStringList(dir.absolutePath()));
+#endif
 	app.setWindowIcon(QIcon(":/images/icon.png"));
 	MainWindow win;
 	win.show(); 

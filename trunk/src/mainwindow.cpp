@@ -58,7 +58,9 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 	setActionsEnabled(false);
 #ifdef Q_WS_MAC
 	setUnifiedTitleAndToolBarOnMac(true);
+	statusBar()->setSizeGripEnabled(false);
 #endif
+	setFixedSize(sizeHint());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

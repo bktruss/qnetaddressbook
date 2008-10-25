@@ -41,7 +41,7 @@ CentralWidget::CentralWidget( QWidget *parent )
 	: QWidget(parent)
 {
 	QSettings settings;
-	
+
 	control = new MapControl(QSize(600, 600));
 	connect(control, SIGNAL(viewChanged(const QPointF &, int)), this, SIGNAL(viewChanged(const QPointF &, int)));	
 	
@@ -60,6 +60,7 @@ CentralWidget::CentralWidget( QWidget *parent )
 	
 	QGridLayout *layout = new QGridLayout(this);
 	layout->addWidget(control, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
+	layout->setMargin(0);	
 	setLayout(layout);
 	control->setMinimumSize(QSize(601,601));
 
