@@ -28,6 +28,7 @@
 using namespace qmapcontrol;
 
 class QIODevice;
+class QResizeEvent;
 class CentralWidget : public QWidget
 {
 		Q_OBJECT
@@ -66,6 +67,9 @@ class CentralWidget : public QWidget
 		
 		/* View */
 		void goHome();
+	
+	protected:
+	virtual void resizeEvent(QResizeEvent *event);	
 		
 	private slots:
 		/* Real methods to do things*/

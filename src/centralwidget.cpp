@@ -58,11 +58,11 @@ CentralWidget::CentralWidget( QWidget *parent )
 	for(int i = 0; i<=3; i++)
 		control->addLayer(layers[i]);
 	
-	QGridLayout *layout = new QGridLayout(this);
-	layout->addWidget(control, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(control);
 	layout->setMargin(0);	
 	setLayout(layout);
-	control->setMinimumSize(QSize(601,601));
+
 
 	/* Cache */
 	if(settings.value("settings/cache_enabled", false).toBool())
@@ -240,6 +240,11 @@ void CentralWidget::importNetwork(const QString &line)
 			return;
 		}
 	}
+}
+
+void CentralWidget::resizeEvent(QResizeEvent *event)
+{
+	control->resize(event->size() - QSize (1,1));	
 }
 
 void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name)
