@@ -31,6 +31,7 @@ using namespace qmapcontrol;
 
 class QIODevice;
 class QResizeEvent;
+class QDomNode;
 class CentralWidget : public QWidget
 {
 		Q_OBJECT
@@ -72,13 +73,14 @@ class CentralWidget : public QWidget
 		void goHome();
 	
 	protected:
-	virtual void resizeEvent(QResizeEvent *event);	
+		virtual void resizeEvent(QResizeEvent *event);	
 		
 	private slots:
 		/* Real methods to do things*/
 		void showNetwork(Geometry *geometry, QPoint point);
 		void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
 		void importNetwork(const QString &line);
+		void importNetwork(const QDomNode &node);
 		
 	signals:
 		void viewChanged(const QPointF &coordinate, int zoom);

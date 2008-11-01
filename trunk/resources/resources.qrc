@@ -16,5 +16,6 @@
     <file>images/wep.png</file>
     <file>images/wpa.png</file>
     <file>images/wpa2.png</file>
+    <file>images/splash.png</file>
   </qresource>
 </RCC>
