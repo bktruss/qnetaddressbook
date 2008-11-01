@@ -1,0 +1,351 @@
+<ui version="4.0" >
+ <author>Lorenzo Masini</author>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>568</width>
+    <height>112</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>QNetAddressBook</string>
+  </property>
+  <property name="statusTip" >
+   <string/>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>66</y>
+     <width>568</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout" />
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>568</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionNew" />
+    <addaction name="actionOpen" />
+    <addaction name="actionClose" />
+    <addaction name="separator" />
+    <addaction name="actionImport" />
+    <addaction name="separator" />
+    <addaction name="actionQuit" />
+   </widget>
+   <widget class="QMenu" name="menu_Edit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionAddNetwork" />
+    <addaction name="separator" />
+    <addaction name="actionPreferences" />
+   </widget>
+   <widget class="QMenu" name="menuF_ilter" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionZoomIn" />
+    <addaction name="actionZoomOut" />
+    <addaction name="separator" />
+    <addaction name="actionOpenNetworks" />
+    <addaction name="actionWEPNetworks" />
+    <addaction name="actionWPANetworks" />
+    <addaction name="actionWPA2Networks" />
+   </widget>
+   <widget class="QMenu" name="menu_Help" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout" />
+   </widget>
+   <widget class="QMenu" name="menuGo" >
+    <property name="title" >
+     <string>Go</string>
+    </property>
+    <addaction name="actionGoHome" />
+   </widget>
+   <addaction name="menu_File" />
+   <addaction name="menu_Edit" />
+   <addaction name="menuF_ilter" />
+   <addaction name="menuGo" />
+   <addaction name="menu_Help" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>90</y>
+     <width>568</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="fileToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>22</y>
+     <width>151</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="windowTitle" >
+    <string>File</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew" />
+   <addaction name="actionOpen" />
+   <addaction name="actionClose" />
+  </widget>
+  <widget class="QToolBar" name="editToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>151</x>
+     <y>22</y>
+     <width>59</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="windowTitle" >
+    <string>Edit</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionAddNetwork" />
+  </widget>
+  <widget class="QToolBar" name="goToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>210</x>
+     <y>22</y>
+     <width>59</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="windowTitle" >
+    <string>Go</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionGoHome" />
+  </widget>
+  <widget class="QToolBar" name="viewToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>269</x>
+     <y>22</y>
+     <width>299</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="windowTitle" >
+    <string>View</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionZoomIn" />
+   <addaction name="actionZoomOut" />
+   <addaction name="separator" />
+   <addaction name="actionOpenNetworks" />
+   <addaction name="actionWEPNetworks" />
+   <addaction name="actionWPANetworks" />
+   <addaction name="actionWPA2Networks" />
+  </widget>
+  <action name="actionNew" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/filenew.png</normaloff>:/images/filenew.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;New</string>
+   </property>
+  </action>
+  <action name="actionOpen" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/fileopen.png</normaloff>:/images/fileopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="actionQuit" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/application_exit.png</normaloff>:/images/application_exit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionImport" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/fileimport.png</normaloff>:/images/fileimport.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Import...</string>
+   </property>
+  </action>
+  <action name="actionAddNetwork" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/edit_add.png</normaloff>:/images/edit_add.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add Network</string>
+   </property>
+  </action>
+  <action name="actionAbout" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/help_about.png</normaloff>:/images/help_about.png</iconset>
+   </property>
+   <property name="text" >
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionOpenNetworks" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/open.png</normaloff>:/images/open.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Open Networks</string>
+   </property>
+  </action>
+  <action name="actionWEPNetworks" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/wep.png</normaloff>:/images/wep.png</iconset>
+   </property>
+   <property name="text" >
+    <string>WEP Networks</string>
+   </property>
+  </action>
+  <action name="actionWPANetworks" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/wpa.png</normaloff>:/images/wpa.png</iconset>
+   </property>
+   <property name="text" >
+    <string>WPA Networks</string>
+   </property>
+  </action>
+  <action name="actionWPA2Networks" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/wpa2.png</normaloff>:/images/wpa2.png</iconset>
+   </property>
+   <property name="text" >
+    <string>WPA2 Networks</string>
+   </property>
+  </action>
+  <action name="actionZoomIn" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/viewmag+.png</normaloff>:/images/viewmag+.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="actionZoomOut" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/viewmag-.png</normaloff>:/images/viewmag-.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="actionClose" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/fileclose.png</normaloff>:/images/fileclose.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionPreferences" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/preferences_system.png</normaloff>:/images/preferences_system.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Preferences...</string>
+   </property>
+  </action>
+  <action name="actionGoHome" >
+   <property name="icon" >
+    <iconset resource="../resources/resources.qrc" >
+     <normaloff>:/images/folder_home2.png</normaloff>:/images/folder_home2.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Home</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resources/resources.qrc" />
+ </resources>
+ <connections/>
+</ui>
