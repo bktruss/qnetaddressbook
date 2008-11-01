@@ -18,11 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <QApplication>
+#include <QSplashScreen>
+#include <QPixmap>
+
 #include "mainwindow.h"
+
 #ifdef Q_WS_MAC
 #include <QDir>
 #endif
-//
+
 int main(int argc, char ** argv)
 {
 	QCoreApplication::setOrganizationName("qnetaddressbook");
@@ -37,8 +41,19 @@ int main(int argc, char ** argv)
     QApplication::setLibraryPaths(QStringList(dir.absolutePath()));
 #endif
 	app.setWindowIcon(QIcon(":/images/icon.png"));
+	
+	QSplashScreen splash(QPixmap(":images/splash.png"));
+	splash.show();
+	splash.showMessage(QObject::tr("Loading Main Window..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
+	app.processEvents();	
+	
 	MainWindow win;
 	win.show(); 
+
+	splash.showMessage(QObject::tr("Starting up..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
+	app.processEvents();
+	splash.finish(&win);
+
 	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
 	return app.exec();
 }

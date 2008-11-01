@@ -88,6 +88,7 @@ void CentralWidget::loadNetworks()
 	QSqlQuery query;
 	if(!query.exec("SELECT bssid, lat, lon, encryption FROM networks"))
 		return;
+
 	while(query.next()){
 		QString bssid = query.value(0).toString();
 		qreal lat = query.value(1).toDouble();		
@@ -97,10 +98,21 @@ void CentralWidget::loadNetworks()
 	}
 }
 
+void CentralWidget::importNetworksFromCSV(QIODevice &device)
+{
+	QTextStream stream(&device);
+		
+	while(!stream.atEnd()){	
+		QString line = stream.readLine();
+		importNetwork(line);
+		}
+		
+	clearNetworks();
+	loadNetworks();	
+}
+
 void CentralWidget::importNetworksFromXML(QIODevice &device) 
 {
-	unsigned int i,j, k;
-	
 	QDomDocument doc("XML import");
 	QString error;
 	if (!doc.setContent(&device, &error)) {
@@ -117,102 +129,16 @@ void CentralWidget::importNetworksFromXML(QIODevice &device)
    	}
    	
  	QDomNodeList networks = root.childNodes(); //node wireless-network
- 	QDomNodeList elements; 
- 	QDomNodeList locations;  
- 	QDomNode element;
- 	QDomNode location;
- 
- 	QString SSID;
- 	QString BSSID;
- 	QString channel;
- 	//QString maxrate;
- 	QString longitude;
- 	QString latitude;
- 	NetworkEncryption encryption = None;
 
 	//first cycle on networks
-	for (i=0;i<networks.length();i++) {
-		elements = networks.item(i).childNodes();
-			//second cycle on single network's properties
-			for (j=0;j<elements.length();j++) {
-	 			element = elements.item(j);
-	 			QDomElement e = element.toElement(); // try to convert the node to an element.
-     			if(!e.isNull()) {
-					if (e.tagName() == "SSID") {
-						SSID = e.text();
-					}
-					if (e.tagName() == "BSSID") {
-						BSSID = e.text();
-					}
-					if (e.tagName() == "channel") {
-						channel = e.text();
-					}
-					//if (e.tagName() == "maxrate") {
-					//	maxrate = e.text();
-					//}
-					if (e.tagName() == "gps-info") {
-						locations = e.childNodes();
-							for (k=0;k<locations.length();k++) {
-								location = locations.item(k);
-					 			QDomElement l = location.toElement(); // try to convert the node to an element.
-									//we could also calculate the media among min lat and max lat									
-									if (l.tagName() == "min-lat") {
-										latitude = l.text();
-									}
-									if (l.tagName() == "min-lon") {
-										longitude = l.text();
-									}
-							}
-					}
-					//the last encryption is the strongest
-					if (e.tagName() == "encryption") {
-						if (e.text() == "None")
-							encryption = None;
-						if (e.text() == "WEP")
-							encryption = WEP;
-						if (e.text() == "WPA" || e.text() == "TKIP")
-							encryption = WPA;
-						if (e.text() == "AES-CCM")
-							encryption = WPA2;
-					}				
-     			}
-    		}
-     			
-     		QSqlQuery query;
-			query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,NULL,:encryption)");
-			query.bindValue(":essid",SSID);
-			//qDebug(SSID.toUtf8());
-			query.bindValue(":bssid", BSSID);
-			query.bindValue(":channel", channel);
-			query.bindValue(":signal", NULL); //we can't get this value from XML file
-			query.bindValue(":lat", latitude);
-			query.bindValue(":lon", longitude);
-			query.bindValue(":encryption", encryption);
-			if(!query.exec()){
-				if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows. 
-					QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
-					return;
-				}
-			}
-			//qDebug("Query OK");			
+	for (unsigned int i= 0; i < networks.length(); ++i) {
+		importNetwork(networks.item(i));			
 	}
 	
 	clearNetworks();
 	loadNetworks();
 }
 
-void CentralWidget::importNetworksFromCSV(QIODevice &device)
-{
-	QTextStream stream(&device);
-		
-	while(!stream.atEnd()){	
-		QString line = stream.readLine();
-		importNetwork(line);
-		}
-		
-	clearNetworks();
-	loadNetworks();	
-}
 
 void CentralWidget::addNetwork()
 {
@@ -351,6 +277,79 @@ void CentralWidget::importNetwork(const QString &line)
 			return;
 		}
 	}
+}
+
+void CentralWidget::importNetwork(const QDomNode &node)
+{
+	QString SSID;
+    QString BSSID;
+    QString channel;
+    //QString maxrate;
+    QString longitude;
+    QString latitude;
+    NetworkEncryption encryption = None;
+	QDomNodeList elements = node.childNodes();
+
+	for (unsigned int i = 0; i < elements.length(); ++i) {
+		QDomNode element = elements.item(i);
+	 	QDomElement e = element.toElement(); // try to convert the node to an element.
+     	if(!e.isNull()) {
+			if (e.tagName() == "SSID") {
+				SSID = e.text();
+			}
+			if (e.tagName() == "BSSID") {
+				BSSID = e.text();
+			}
+			if (e.tagName() == "channel") {
+				channel = e.text();
+			}
+			//if (e.tagName() == "maxrate") {
+			//	maxrate = e.text();
+			//}
+			if (e.tagName() == "gps-info") {
+				QDomNodeList locations = e.childNodes();
+				for (unsigned int i = 0; i < locations.length(); ++i) {
+					QDomNode location = locations.item(i);
+					QDomElement l = location.toElement(); // try to convert the node to an element.
+					//we could also calculate the media among min lat and max lat									
+					if (l.tagName() == "min-lat") {
+						latitude = l.text();
+					}
+					if (l.tagName() == "min-lon") {
+						longitude = l.text();
+					}
+				}
+			}
+			//the last encryption is the strongest
+			if (e.tagName() == "encryption") {
+				if (e.text() == "None")
+					encryption = None;
+				if (e.text() == "WEP")
+					encryption = WEP;
+				if (e.text() == "WPA" || e.text() == "TKIP")
+					encryption = WPA;
+				if (e.text() == "AES-CCM")
+					encryption = WPA2;
+				}				
+     		}
+    	}
+     			
+     	QSqlQuery query;
+		query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,NULL,:encryption)");
+		query.bindValue(":essid",SSID);
+		//qDebug(SSID.toUtf8());
+		query.bindValue(":bssid", BSSID);
+		query.bindValue(":channel", channel);
+		query.bindValue(":signal", 0); //we can't get this value from XML file
+		query.bindValue(":lat", latitude);
+		query.bindValue(":lon", longitude);
+		query.bindValue(":encryption", encryption);
+		if(!query.exec()){
+			if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows. 
+				QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
+				return;
+			}
+		}
 }
 
 void CentralWidget::resizeEvent(QResizeEvent *event)
