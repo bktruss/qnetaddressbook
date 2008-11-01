@@ -1,6 +1,8 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
+ *   Copyright (C) 2008 by Andrea Decorte                                  *
+ *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -46,7 +48,8 @@ class CentralWidget : public QWidget
 		void loadNetworks();
 		
 		/* Import Networks */
-		void importNetworks(QIODevice &device);
+		void importNetworksFromCSV(QIODevice &device);
+		void importNetworksFromXML(QIODevice &device);
 	
 	public slots:
 		/* Add Network */
@@ -76,7 +79,7 @@ class CentralWidget : public QWidget
 		void showNetwork(Geometry *geometry, QPoint point);
 		void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
 		void importNetwork(const QString &line);
-
+		
 	signals:
 		void viewChanged(const QPointF &coordinate, int zoom);
 			
