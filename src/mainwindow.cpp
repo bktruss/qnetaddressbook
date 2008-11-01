@@ -1,6 +1,8 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
+ *   Copyright (C) 2008 by Andrea Decorte                                  *
+ *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -123,16 +125,27 @@ void MainWindow::closeFile()
 	setActionsEnabled(false);
 }
 
-void MainWindow::importFile()
+void MainWindow::importFileCSV()
 {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet CSV File"), QString(), tr("Kismet CSV Files (*.csv)"));
 	if(filename.isEmpty())
 		return;
-			
 	QFile file(filename);
 	if(file.open(QIODevice::ReadOnly))
-		w->importNetworks(file);
-	file.close();
+		w->importNetworksFromCSV(file);
+	file.close(); 
+}
+
+void MainWindow::importFileXML()
+{
+	QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet XML File"), QString(), tr("Kismet XML files (*.xml)"));
+	if(filename.isEmpty())
+		return;
+	QFile file(filename);
+	if(file.open(QIODevice::ReadOnly))				
+		w->importNetworksFromXML(file);
+		
+	file.close(); 
 }
 
 void MainWindow::showPreferencesDialog()
@@ -149,6 +162,7 @@ void MainWindow::showAbout()
 																  "<h3>Authors:</h3>"
 																  "<small><ul>"
 																  	"<li>Lorenzo \"Il Rugginoso\" Masini &lt;<a href=\"mailto:lorenxo86@gmail.com\">lorenxo86@gmail.com</a>&gt;</li>"
+																  	"<li>Andrea \"Klenje\" Decorte &lt;<a href=\"mailto:adecorte@gmail.com\">adecorte@gmail.com</a>&gt;</li>"
 																  "</ul></small>"));
 }
 
@@ -162,7 +176,7 @@ void MainWindow::updateStatusBar(const QPointF &coordinate, int zoom)
 void MainWindow::setupActions()
 {
 	/* File */
-	actionNew->setStatusTip(tr("Creates a new netowrk database"));
+	actionNew->setStatusTip(tr("Creates a new network database"));
 	actionNew->setShortcut(QKeySequence(QKeySequence::New));
 	connect(actionNew, SIGNAL(triggered()), this, SLOT(newFile()));	
 	
@@ -174,8 +188,11 @@ void MainWindow::setupActions()
 	actionClose->setShortcut(QKeySequence(QKeySequence::Close));
 	connect(actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));	
 	
-	actionImport->setStatusTip(tr("Import Kismet CSV file"));
-	connect(actionImport, SIGNAL(triggered()), this, SLOT(importFile()));	
+	actionImportKismetCSV->setStatusTip(tr("Imports Kismet CSV file"));
+	connect(actionImportKismetCSV, SIGNAL(triggered()), this, SLOT(importFileCSV()));
+	
+	actionImportKismetXML->setStatusTip(tr("Imports Kismet XML file"));
+	connect(actionImportKismetXML, SIGNAL(triggered()), this, SLOT(importFileXML()));	
 	
 	actionQuit->setStatusTip(tr("Quits the application"));
 	actionQuit->setShortcut(QKeySequence("Ctrl+Q"));
@@ -223,7 +240,8 @@ void MainWindow::setActionsEnabled(bool enabled)
 {
 	/* File */
 	actionClose->setEnabled(enabled);
-	actionImport->setEnabled(enabled);
+	actionImportKismetCSV->setEnabled(enabled);
+	actionImportKismetXML->setEnabled(enabled);
 	
 	/* Edit */
 	actionAddNetwork->setEnabled(enabled);

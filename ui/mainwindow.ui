@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>66</y>
+     <y>64</y>
      <width>568</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" />
@@ -33,18 +33,31 @@
      <x>0</x>
      <y>0</y>
      <width>568</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File" >
     <property name="title" >
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menu_Import" >
+     <property name="title" >
+      <string>&amp;Import...</string>
+     </property>
+     <widget class="QMenu" name="menuKismet" >
+      <property name="title" >
+       <string>&amp;kismet</string>
+      </property>
+      <addaction name="actionImportKismetCSV" />
+      <addaction name="actionImportKismetXML" />
+     </widget>
+     <addaction name="menuKismet" />
+    </widget>
     <addaction name="actionNew" />
     <addaction name="actionOpen" />
     <addaction name="actionClose" />
     <addaction name="separator" />
-    <addaction name="actionImport" />
+    <addaction name="menu_Import" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
    </widget>
@@ -90,9 +103,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>90</y>
+     <y>89</y>
      <width>568</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -100,9 +113,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>22</y>
-     <width>151</width>
-     <height>44</height>
+     <y>26</y>
+     <width>122</width>
+     <height>38</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -121,10 +134,10 @@
   <widget class="QToolBar" name="editToolBar" >
    <property name="geometry" >
     <rect>
-     <x>151</x>
-     <y>22</y>
-     <width>59</width>
-     <height>44</height>
+     <x>122</x>
+     <y>26</y>
+     <width>48</width>
+     <height>38</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -141,10 +154,10 @@
   <widget class="QToolBar" name="goToolBar" >
    <property name="geometry" >
     <rect>
-     <x>210</x>
-     <y>22</y>
-     <width>59</width>
-     <height>44</height>
+     <x>170</x>
+     <y>26</y>
+     <width>48</width>
+     <height>38</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -161,10 +174,10 @@
   <widget class="QToolBar" name="viewToolBar" >
    <property name="geometry" >
     <rect>
-     <x>269</x>
-     <y>22</y>
-     <width>299</width>
-     <height>44</height>
+     <x>218</x>
+     <y>26</y>
+     <width>350</width>
+     <height>38</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -211,22 +224,13 @@
     <string>&amp;Quit</string>
    </property>
   </action>
-  <action name="actionImport" >
-   <property name="icon" >
-    <iconset resource="../resources/resources.qrc" >
-     <normaloff>:/images/fileimport.png</normaloff>:/images/fileimport.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Import...</string>
-   </property>
-  </action>
   <action name="actionAddNetwork" >
    <property name="icon" >
     <iconset resource="../resources/resources.qrc" >
      <normaloff>:/images/edit_add.png</normaloff>:/images/edit_add.png</iconset>
    </property>
    <property name="text" >
-    <string>Add Network</string>
+    <string>&amp;Add Network</string>
    </property>
   </action>
   <action name="actionAbout" >
@@ -331,7 +335,7 @@
      <normaloff>:/images/preferences_system.png</normaloff>:/images/preferences_system.png</iconset>
    </property>
    <property name="text" >
-    <string>Preferences...</string>
+    <string>&amp;Preferences...</string>
    </property>
   </action>
   <action name="actionGoHome" >
@@ -341,6 +345,16 @@
    </property>
    <property name="text" >
     <string>Home</string>
+   </property>
+  </action>
+  <action name="actionImportKismetCSV" >
+   <property name="text" >
+    <string>&amp;CSV</string>
+   </property>
+  </action>
+  <action name="actionImportKismetXML" >
+   <property name="text" >
+    <string>&amp;XML</string>
    </property>
   </action>
  </widget>

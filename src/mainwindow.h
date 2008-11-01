@@ -1,6 +1,8 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
+ *   Copyright (C) 2008 by Andrea Decorte                                  *
+ *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -38,7 +40,8 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 		void newFile();
 		void openFile();
 		void closeFile();
-		void importFile();
+		void importFileCSV();
+		void importFileXML();
 		void showPreferencesDialog();
 		void showAbout();
 		void updateStatusBar(const QPointF &coordinate, int zoom);
