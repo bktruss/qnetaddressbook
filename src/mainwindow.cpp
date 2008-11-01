@@ -19,6 +19,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <QSettings>
 #include <QMessageBox>
 #include <QFrame>
 #include <QDir>
@@ -40,6 +41,7 @@
 MainWindow::MainWindow( QWidget * parent, Qt::WFlags f) 
 	: QMainWindow(parent, f)
 {
+	QSettings settings;
 	setupUi(this);
 	
 	w = new CentralWidget(this);
@@ -61,12 +63,21 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 #ifdef Q_WS_MAC
 	setUnifiedTitleAndToolBarOnMac(true);
 	statusBar()->setSizeGripEnabled(false);
+#else
+	restoreState(settings.value("mainwindow/state").toByteArray());
 #endif
+	restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
+
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+	QSettings settings;
 	closeFile();
+	settings.setValue("mainwindow/geometry", saveGeometry());
+#ifndef Q_WS_MAC
+	settings.setValue("mainwindow/state", saveState());
+#endif
 	QMainWindow::closeEvent(event);	
 }
 
