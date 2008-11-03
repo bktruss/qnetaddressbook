@@ -70,8 +70,11 @@ class CentralWidget : public QWidget
 		void zoomOut() { control->zoomOut();}
 		
 		/* View */
-		void goHome();
-	
+                void goHome();
+
+                /* Move to */
+                void moveTo(const QPointF &coordinate);
+
 	protected:
 		virtual void resizeEvent(QResizeEvent *event);	
 		

@@ -183,6 +183,12 @@ void CentralWidget::goHome()
 	control->setZoom(settings.value("settings/view_zoom", 2).toInt());
 }
 
+void CentralWidget::moveTo(const QPointF &coordinate)
+{
+    control->moveTo(coordinate);
+    control->setZoom(17);
+}
+
 void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 {
 	QSqlQuery query;
