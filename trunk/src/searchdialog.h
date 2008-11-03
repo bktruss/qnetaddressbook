@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
- *   Copyright (C) 2008 by Andrea Decorte                                  *
- *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,42 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SEARCHDIALOG_H
+#define SEARCHDIALOG_H
 
-#include <QMainWindow>
-#include "ui_mainwindow.h"
+#include <QtGui/QDialog>
+#include "ui_searchdialog.h"
 
-class CentralWidget;
-class QLabel;
-class MainWindow : public QMainWindow, public Ui::MainWindow
+class QSqlQueryModel;
+class SearchDialog : public QDialog, Ui::SearchDialog
 {
-		Q_OBJECT
-	public:
-		MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
-	
-	protected:
-		void closeEvent(QCloseEvent *event);
-		
-	private slots:
-		void newFile();
-		void openFile();
-		void closeFile();
-		void importFileCSV();
-                void importFileXML();
-                void showFindDialog();
-		void showPreferencesDialog();
-		void showAbout();
-		void updateStatusBar(const QPointF &coordinate, int zoom);
-		
-	private:
-		void setupActions();
-		void setActionsEnabled(bool enabled);
-		CentralWidget *w;
-		QVector<QLabel*> statusLabel;
+        Q_OBJECT
+    public:
+        SearchDialog(QWidget *parent = 0);
+        QSizeF selectedCoordinates() const; // maybe better with signal/slot
+
+    private slots:
+        void performSearch();
+        void networkSelected(const QModelIndex &index);
+
+    signals:
+        void networkSelected(const QPointF &coordinate);
+
+    private:
+        QSqlQueryModel *model;
 };
-#endif
 
-
-
-
+#endif // SEARCHDIALOG_H

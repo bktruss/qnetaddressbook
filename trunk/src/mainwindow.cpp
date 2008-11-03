@@ -36,6 +36,7 @@
 
 #include "mainwindow.h"
 #include "centralwidget.h"
+#include "searchdialog.h"
 #include "preferencesdialog.h"
 
 MainWindow::MainWindow( QWidget * parent, Qt::WFlags f) 
@@ -159,6 +160,13 @@ void MainWindow::importFileXML()
 	file.close(); 
 }
 
+void MainWindow::showFindDialog()
+{
+    SearchDialog dialog(this);
+    connect(&dialog, SIGNAL(networkSelected(const QPointF &)), w, SLOT(moveTo(const QPointF &)));
+    dialog.exec();
+}
+
 void MainWindow::showPreferencesDialog()
 {
 	PreferencesDialog dialog(this);
@@ -212,7 +220,10 @@ void MainWindow::setupActions()
 	/* Edit */
 	actionAddNetwork->setStatusTip(tr("Adds a network in the centre of the map"));
 	connect(actionAddNetwork, SIGNAL(triggered()), w, SLOT(addNetwork()));
-	
+
+        actionFind->setStatusTip(tr("Shows the find dialog"));
+        connect(actionFind, SIGNAL(triggered()), this, SLOT(showFindDialog()));
+
 	actionPreferences->setStatusTip(tr("Opens preferences dialog"));
 	connect(actionPreferences, SIGNAL(triggered()), this, SLOT(showPreferencesDialog()));
 	
@@ -256,7 +267,8 @@ void MainWindow::setActionsEnabled(bool enabled)
 	
 	/* Edit */
 	actionAddNetwork->setEnabled(enabled);
-	
+        actionFind->setEnabled(enabled);
+
 	/* View */
 	actionOpenNetworks->setEnabled(enabled);	
 	actionWEPNetworks->setEnabled(enabled);
