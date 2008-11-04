@@ -25,11 +25,12 @@
 
 class ProxyPreferencesPage : virtual public PreferencesPage, public Ui::ProxyPreferencesPage
 {
-		Q_OBJECT
-	public:
-		ProxyPreferencesPage(QWidget *parent = 0);
+    Q_OBJECT
 
-		void applyChanges();
-		void restoreDefaults();	
+public:
+    ProxyPreferencesPage(QWidget *parent = 0);
+
+    void applyChanges();
+    void restoreDefaults();
 };
 #endif

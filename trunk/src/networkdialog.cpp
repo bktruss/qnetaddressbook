@@ -23,131 +23,131 @@
 #include "networkdialog.h"
 
 NetworkDialog::NetworkDialog(Mode mode, QWidget *parent) 
-	: QDialog(parent), Ui::NetworkDialog()
+    : QDialog(parent), Ui::NetworkDialog()
 {
-	m_purpose = NoAction;	
-	QRegExp essidRegExp("[A-Za-z0-9]+");
-	QValidator *essidValidator = new QRegExpValidator(essidRegExp, this);
+    m_purpose = NoAction;
+    QRegExp essidRegExp("[A-Za-z0-9_\\-]+");
+    QValidator *essidValidator = new QRegExpValidator(essidRegExp, this);
 
-	setupUi(this);
-	QPushButton *removeButton = buttonBox->addButton(tr("Remove"), QDialogButtonBox::DestructiveRole);
-	if (mode == CreateMode)
-		removeButton->setEnabled(false);
-		
-	essidEdit->setValidator(essidValidator);	
-	bssidEdit->setInputMask("HH:HH:HH:HH:HH:HH");
+    setupUi(this);
+    QPushButton *removeButton = buttonBox->addButton(tr("Remove"), QDialogButtonBox::DestructiveRole);
+    if (mode == CreateMode)
+        removeButton->setEnabled(false);
 
-	connect(buttonBox, SIGNAL(clicked(QAbstractButton *)), this, SLOT(setPurpose(QAbstractButton *)));
-	connect(essidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
-	connect(bssidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
-	validate();
+    essidEdit->setValidator(essidValidator);
+    bssidEdit->setInputMask("HH:HH:HH:HH:HH:HH");
+
+    connect(buttonBox, SIGNAL(clicked(QAbstractButton *)), this, SLOT(setPurpose(QAbstractButton *)));
+    connect(essidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
+    connect(bssidEdit, SIGNAL(textChanged(const QString &)), this, SLOT(validate()));
+    validate();
 }
 
 QString NetworkDialog::essid() const 
 {
-	return essidEdit->text();
+    return essidEdit->text();
 }
 
 void NetworkDialog::setEssid(const QString &essid)
 {
-	essidEdit->setText(essid);
+    essidEdit->setText(essid);
 }
 
 QString NetworkDialog::bssid() const 
 {
-	return bssidEdit->text().toUpper();
+    return bssidEdit->text().toUpper();
 }
 
 void NetworkDialog::setBssid(const QString &bssid)
 {
-	bssidEdit->setText(bssid);
+    bssidEdit->setText(bssid);
 }
 
 int NetworkDialog::channel() const 
 {
-	return channelSpin->value();
+    return channelSpin->value();
 }
 
 void NetworkDialog::setChannel(int channel)
 {
-	channelSpin->setValue(channel);
+    channelSpin->setValue(channel);
 }
 
 int NetworkDialog::signal() const
 {
-	return signalSpin->value();	
+    return signalSpin->value();
 }
 
 void NetworkDialog::setSignal(int signal)
 {
-	signalSpin->setValue(signal);	
+    signalSpin->setValue(signal);
 }
 
 int NetworkDialog::encryption() const 
 {
-	return encryptionCombo->currentIndex();
+    return encryptionCombo->currentIndex();
 }
 
 void NetworkDialog::setEncryption(int encryption)
 {
-	encryptionCombo->setCurrentIndex(encryption);
+    encryptionCombo->setCurrentIndex(encryption);
 }
 
 double NetworkDialog::latitude() const 
 {
-	return latitudeSpin->value();
+    return latitudeSpin->value();
 }
 
 void NetworkDialog::setLatitude(double latitude)
 {
-	latitudeSpin->setValue(latitude);
+    latitudeSpin->setValue(latitude);
 }
 
 double NetworkDialog::longitude() const 
 {
-	return longitudeSpin->value();
+    return longitudeSpin->value();
 }
 
 void NetworkDialog::setLongitude(double longitude)
 {
-	longitudeSpin->setValue(longitude);
+    longitudeSpin->setValue(longitude);
 }
 
 QString NetworkDialog::comment() const 
 {
-	return commentEdit->toPlainText();
+    return commentEdit->toPlainText();
 }
 
 void NetworkDialog::setComment(const QString &comment)
 {
-	commentEdit->setPlainText(comment);
+    commentEdit->setPlainText(comment);
 }
 
 NetworkDialog::Purpose NetworkDialog::purpose() const
 {
-	return m_purpose;
+    return m_purpose;
 }
 
 void NetworkDialog::validate()
 {
-	if (essidEdit->hasAcceptableInput() && bssidEdit->hasAcceptableInput())
-		buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
-	else
-		buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
+    if (essidEdit->hasAcceptableInput() && bssidEdit->hasAcceptableInput())
+        buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
+    else
+        buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
 }
 
 void NetworkDialog::setPurpose(QAbstractButton *button)
 {
-	QDialogButtonBox::ButtonRole role = buttonBox->buttonRole(button);
-	switch(role){
-		case QDialogButtonBox::AcceptRole:
-			m_purpose = SaveNetworkAction;
-			break;
-		case QDialogButtonBox::DestructiveRole:
-			m_purpose = RemoveNetworkAction;
-			QDialog::accept();
-			break;
-		default:
-			m_purpose = NoAction;	
-	}
+    QDialogButtonBox::ButtonRole role = buttonBox->buttonRole(button);
+    switch(role){
+                case QDialogButtonBox::AcceptRole:
+        m_purpose = SaveNetworkAction;
+        break;
+                case QDialogButtonBox::DestructiveRole:
+        m_purpose = RemoveNetworkAction;
+        QDialog::accept();
+        break;
+                default:
+        m_purpose = NoAction;
+    }
 }

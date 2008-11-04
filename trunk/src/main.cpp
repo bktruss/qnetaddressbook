@@ -29,31 +29,31 @@
 
 int main(int argc, char ** argv)
 {
-	QCoreApplication::setOrganizationName("qnetaddressbook");
-	QCoreApplication::setOrganizationDomain("googlecode.com");
-    QCoreApplication::setApplicationName("QNetAddressBook");	
-	
-	QApplication app( argc, argv );
+    QCoreApplication::setOrganizationName("qnetaddressbook");
+    QCoreApplication::setOrganizationDomain("googlecode.com");
+    QCoreApplication::setApplicationName("QNetAddressBook");
+
+    QApplication app( argc, argv );
 #ifdef Q_WS_MAC
-	QDir dir(QApplication::applicationDirPath());
+    QDir dir(QApplication::applicationDirPath());
     dir.cdUp();
     dir.cd("plugins");
     QApplication::setLibraryPaths(QStringList(dir.absolutePath()));
 #endif
-	app.setWindowIcon(QIcon(":/images/icon.png"));
-	
-	QSplashScreen splash(QPixmap(":images/splash.png"));
-	splash.show();
-	splash.showMessage(QObject::tr("Loading Main Window..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
-	app.processEvents();	
-	
-	MainWindow win;
-	win.show(); 
+    app.setWindowIcon(QIcon(":/images/icon.png"));
 
-	splash.showMessage(QObject::tr("Starting up..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
-	app.processEvents();
-	splash.finish(&win);
+    QSplashScreen splash(QPixmap(":images/splash.png"));
+    splash.show();
+    splash.showMessage(QObject::tr("Loading Main Window..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
+    app.processEvents();
 
-	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
-	return app.exec();
+    MainWindow win;
+    win.show();
+
+    splash.showMessage(QObject::tr("Starting up..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
+    app.processEvents();
+    splash.finish(&win);
+
+    app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
+    return app.exec();
 }

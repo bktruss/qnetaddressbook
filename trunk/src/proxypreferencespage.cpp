@@ -20,31 +20,31 @@
 #include "proxypreferencespage.h"
 
 ProxyPreferencesPage::ProxyPreferencesPage( QWidget *parent) 
-	: PreferencesPage(parent), Ui::ProxyPreferencesPage()
+    : PreferencesPage(parent), Ui::ProxyPreferencesPage()
 {
-	setupUi(this);
-	groupBox->setChecked(settings.value("settings/proxy_enabled", false).toBool());
-	addressEdit->setText(settings.value("settings/proxy_address", QString()).toString());
-	portSpin->setValue(settings.value("settings/proxy_port", 3829).toInt());
-	
-	connect(addressEdit, SIGNAL(textChanged(const QString &)), this, SIGNAL(settingsChanged()));
-	connect(portSpin, SIGNAL(valueChanged(int)), this, SIGNAL(settingsChanged()));
+    setupUi(this);
+    groupBox->setChecked(settings.value("settings/proxy_enabled", false).toBool());
+    addressEdit->setText(settings.value("settings/proxy_address", QString()).toString());
+    portSpin->setValue(settings.value("settings/proxy_port", 3829).toInt());
+
+    connect(addressEdit, SIGNAL(textChanged(const QString &)), this, SIGNAL(settingsChanged()));
+    connect(portSpin, SIGNAL(valueChanged(int)), this, SIGNAL(settingsChanged()));
 }
 
 void ProxyPreferencesPage::applyChanges()
 {
-	settings.setValue("settings/proxy_enabled", groupBox->isChecked());
-	settings.setValue("settings/proxy_address", addressEdit->text());
-	settings.setValue("settings/proxy_port", portSpin->value());	
+    settings.setValue("settings/proxy_enabled", groupBox->isChecked());
+    settings.setValue("settings/proxy_address", addressEdit->text());
+    settings.setValue("settings/proxy_port", portSpin->value());
 }
 
 void ProxyPreferencesPage::restoreDefaults()
 {
-	settings.setValue("settings/proxy_enabled", false);
-	settings.setValue("settings/proxy_address", QString());
-	settings.setValue("settings/proxy_port", 3829);
+    settings.setValue("settings/proxy_enabled", false);
+    settings.setValue("settings/proxy_address", QString());
+    settings.setValue("settings/proxy_port", 3829);
 
-	groupBox->setChecked(settings.value("settings/proxy_enabled", false).toBool());
-	addressEdit->setText(settings.value("settings/proxy_address", QString()).toString());
-	portSpin->setValue(settings.value("settings/proxy_port", 3829).toInt());
+    groupBox->setChecked(settings.value("settings/proxy_enabled", false).toBool());
+    addressEdit->setText(settings.value("settings/proxy_address", QString()).toString());
+    portSpin->setValue(settings.value("settings/proxy_port", 3829).toInt());
 }

@@ -89,7 +89,7 @@ FORMS += ui/mainwindow.ui \
     ui/cachepreferencespage.ui \
     ui/viewpreferencespage.ui \
     ui/preferencesdialog.ui \
-    src/searchdialog.ui
+    ui/searchdialog.ui
 RESOURCES += resources/resources.qrc
 mac:ICON = resources/images/icon.icns
 win32:RC_FILE = resources/icon.rc

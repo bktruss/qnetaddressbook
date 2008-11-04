@@ -20,7 +20,7 @@
 #include "preferencespage.h"
 
 PreferencesPage::PreferencesPage(QWidget *parent)
-	: QWidget(parent)
+    : QWidget(parent)
 {	
 }
 

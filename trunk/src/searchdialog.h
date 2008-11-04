@@ -26,20 +26,20 @@
 class QSqlQueryModel;
 class SearchDialog : public QDialog, Ui::SearchDialog
 {
-        Q_OBJECT
-    public:
-        SearchDialog(QWidget *parent = 0);
-        QSizeF selectedCoordinates() const; // maybe better with signal/slot
+    Q_OBJECT
 
-    private slots:
-        void performSearch();
-        void networkSelected(const QModelIndex &index);
+public:
+    SearchDialog(QWidget *parent = 0);
+    QSizeF selectedCoordinates() const; // maybe better with signal/slot
 
-    signals:
-        void networkSelected(const QPointF &coordinate);
+private slots:
+    void performSearch();
+    void networkSelected(const QModelIndex &index);
 
-    private:
-        QSqlQueryModel *model;
+signals:
+    void networkSelected(const QPointF &coordinate);
+
+private:
+    QSqlQueryModel *model;
 };
-
 #endif // SEARCHDIALOG_H

@@ -34,66 +34,66 @@ class QResizeEvent;
 class QDomNode;
 class CentralWidget : public QWidget
 {
-		Q_OBJECT
-	
-	public:
-		typedef enum {
-			None = 0,
-			WEP,
-			WPA,
-			WPA2
-		} NetworkEncryption;	
-	
-		CentralWidget(QWidget *parent = 0);
-		/* Load Database */
-		void loadNetworks();
-		
-		/* Import Networks */
-		void importNetworksFromCSV(QIODevice &device);
-		void importNetworksFromXML(QIODevice &device);
-	
-	public slots:
-		/* Add Network */
-		void addNetwork();	
-		
-		/* Filter Networks */
-		void setVisibleOpenNetworks(bool visible){ setVisibleNetworks(None, visible); }
-		void setVisibleWEPNetworks(bool visible){ setVisibleNetworks(WEP, visible); }
-		void setVisibleWPANetworks(bool visible){ setVisibleNetworks(WPA, visible); }
-		void setVisibleWPA2Networks(bool visible){ setVisibleNetworks(WPA2, visible); }	
-	
-		/* Clear all geometries */
-		void clearNetworks();
-		
-		/* Zoom */
-		void zoomIn() {control->zoomIn();}
-		void zoomOut() { control->zoomOut();}
-		
-		/* View */
-                void goHome();
+    Q_OBJECT
 
-                /* Move to */
-                void moveTo(const QPointF &coordinate);
+public:
+    typedef enum {
+        None = 0,
+        WEP,
+        WPA,
+        WPA2
+    } NetworkEncryption;
 
-	protected:
-		virtual void resizeEvent(QResizeEvent *event);	
-		
-	private slots:
-		/* Real methods to do things*/
-		void showNetwork(Geometry *geometry, QPoint point);
-		void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
-		void importNetwork(const QString &line);
-		void importNetwork(const QDomNode &node);
-		
-	signals:
-		void viewChanged(const QPointF &coordinate, int zoom);
-			
-	private:
-		void addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name);
-		
-		MapControl *control;
-		MapAdapter *adapter;
-		Layer *layers[4];
-		Layer *base;	
+    CentralWidget(QWidget *parent = 0);
+    /* Load Database */
+    void loadNetworks();
+
+    /* Import Networks */
+    void importNetworksFromCSV(QIODevice &device);
+    void importNetworksFromXML(QIODevice &device);
+
+public slots:
+    /* Add Network */
+    void addNetwork();
+
+    /* Filter Networks */
+    void setVisibleOpenNetworks(bool visible){ setVisibleNetworks(None, visible); }
+    void setVisibleWEPNetworks(bool visible){ setVisibleNetworks(WEP, visible); }
+    void setVisibleWPANetworks(bool visible){ setVisibleNetworks(WPA, visible); }
+    void setVisibleWPA2Networks(bool visible){ setVisibleNetworks(WPA2, visible); }
+
+    /* Clear all geometries */
+    void clearNetworks();
+
+    /* Zoom */
+    void zoomIn() {control->zoomIn();}
+    void zoomOut() { control->zoomOut();}
+
+    /* View */
+    void goHome();
+
+    /* Move to */
+    void moveTo(const QPointF &coordinate);
+
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
+
+private slots:
+    /* Real methods to do things*/
+    void showNetwork(Geometry *geometry, QPoint point);
+    void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
+    void importNetwork(const QString &line);
+    void importNetwork(const QDomNode &node);
+
+signals:
+    void viewChanged(const QPointF &coordinate, int zoom);
+
+private:
+    void addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name);
+
+    MapControl *control;
+    MapAdapter *adapter;
+    Layer *layers[4];
+    Layer *base;
 };
 #endif

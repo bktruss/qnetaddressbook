@@ -29,29 +29,30 @@ class CentralWidget;
 class QLabel;
 class MainWindow : public QMainWindow, public Ui::MainWindow
 {
-		Q_OBJECT
-	public:
-		MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
-	
-	protected:
-		void closeEvent(QCloseEvent *event);
-		
-	private slots:
-		void newFile();
-		void openFile();
-		void closeFile();
-		void importFileCSV();
-                void importFileXML();
-                void showFindDialog();
-		void showPreferencesDialog();
-		void showAbout();
-		void updateStatusBar(const QPointF &coordinate, int zoom);
-		
-	private:
-		void setupActions();
-		void setActionsEnabled(bool enabled);
-		CentralWidget *w;
-		QVector<QLabel*> statusLabel;
+    Q_OBJECT
+
+public:
+    MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
+
+protected:
+    void closeEvent(QCloseEvent *event);
+
+private slots:
+    void newFile();
+    void openFile();
+    void closeFile();
+    void importFileCSV();
+    void importFileXML();
+    void showFindDialog();
+    void showPreferencesDialog();
+    void showAbout();
+    void updateStatusBar(const QPointF &coordinate, int zoom);
+
+private:
+    void setupActions();
+    void setActionsEnabled(bool enabled);
+    CentralWidget *w;
+    QVector<QLabel*> statusLabel;
 };
 #endif
 

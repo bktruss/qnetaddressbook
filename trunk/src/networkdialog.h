@@ -25,53 +25,54 @@
 
 class NetworkDialog : public QDialog, public Ui::NetworkDialog
 {
-		Q_OBJECT
+    Q_OBJECT
 
-	public:
-		typedef enum {
-			NoAction = 0,
-			SaveNetworkAction,
-			RemoveNetworkAction	
-		} Purpose;
+public:
 
-		typedef enum {
-			CreateMode = 0,
-			ModifyMode,
-		} Mode;
-		
-		NetworkDialog(Mode mode, QWidget *parent = 0);
-		
-		QString essid() const;
-		void setEssid(const QString &essid);
-		
-		QString bssid() const;
-		void setBssid(const QString &bssid);
-				
-		int channel() const;
-		void setChannel(int channel);
-		
-		int signal() const;
-		void setSignal(int signal);
-		
-		int encryption() const;
-		void setEncryption(int encryption);
-		
-		double latitude() const;
-		void setLatitude(double latitude);
-		
-		double longitude() const;
-		void setLongitude(double longitude);
-	
-		QString comment() const;
-		void setComment(const QString &comment);
-	
-		Purpose purpose() const;
-		
-	private slots:
-		void validate();
-		void setPurpose(QAbstractButton *button);
-		
-	private:
-		Purpose m_purpose;
+    typedef enum {
+        NoAction = 0,
+        SaveNetworkAction,
+        RemoveNetworkAction
+    } Purpose;
+
+    typedef enum {
+        CreateMode = 0,
+        ModifyMode,
+    } Mode;
+
+    NetworkDialog(Mode mode, QWidget *parent = 0);
+
+    QString essid() const;
+    void setEssid(const QString &essid);
+
+    QString bssid() const;
+    void setBssid(const QString &bssid);
+
+    int channel() const;
+    void setChannel(int channel);
+
+    int signal() const;
+    void setSignal(int signal);
+
+    int encryption() const;
+    void setEncryption(int encryption);
+
+    double latitude() const;
+    void setLatitude(double latitude);
+
+    double longitude() const;
+    void setLongitude(double longitude);
+
+    QString comment() const;
+    void setComment(const QString &comment);
+
+    Purpose purpose() const;
+
+private slots:
+    void validate();
+    void setPurpose(QAbstractButton *button);
+
+private:
+    Purpose m_purpose;
 };
 #endif

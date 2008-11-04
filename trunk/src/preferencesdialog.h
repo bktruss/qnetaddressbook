@@ -25,17 +25,17 @@
 
 class PreferencesDialog : public QDialog, public Ui::PreferencesDialog
 {
-		Q_OBJECT
+    Q_OBJECT
 
-	public:
-		PreferencesDialog(QWidget *parent = 0);
-	
-	public slots:
-		void accept();
-		
-	private slots:
-		void applyChanges();
-		void restoreDefaults();
-		void enableApplyButton();
+public:
+    PreferencesDialog(QWidget *parent = 0);
+
+public slots:
+    void accept();
+
+private slots:
+    void applyChanges();
+    void restoreDefaults();
+    void enableApplyButton();
 };
 #endif

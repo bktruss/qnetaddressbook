@@ -25,13 +25,12 @@
 
 class ViewPreferencesPage : virtual public PreferencesPage, public Ui::ViewPreferencesPage
 {
-		Q_OBJECT
+    Q_OBJECT
 
-	public:
-		ViewPreferencesPage(QWidget *parent = 0);
-		
-		void applyChanges();
-		void restoreDefaults();
-	
+public:
+    ViewPreferencesPage(QWidget *parent = 0);
+
+    void applyChanges();
+    void restoreDefaults();
 };
 #endif
