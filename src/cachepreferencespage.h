@@ -25,15 +25,15 @@
 
 class CachePreferencesPage : virtual public PreferencesPage, public Ui::CachePreferencesPage
 {
-		Q_OBJECT
+    Q_OBJECT
 
-	public:
-		CachePreferencesPage(QWidget *parent = 0);
-		
-		void applyChanges();
-		void restoreDefaults();
-		
-	private slots:
-		void chooseDirectory();
+public:
+    CachePreferencesPage(QWidget *parent = 0);
+
+    void applyChanges();
+    void restoreDefaults();
+
+private slots:
+    void chooseDirectory();
 };
 #endif

@@ -26,7 +26,7 @@
 #include "searchdialog.h"
 
 SearchDialog::SearchDialog(QWidget *parent) :
-    QDialog(parent), Ui::SearchDialog()
+        QDialog(parent), Ui::SearchDialog()
 {
     model = new QSqlQueryModel(this);
 

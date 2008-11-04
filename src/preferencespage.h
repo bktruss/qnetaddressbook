@@ -25,19 +25,18 @@
 
 class PreferencesPage : public QWidget
 {
-		Q_OBJECT
-		
-	public:
-		PreferencesPage(QWidget *parent = 0);
-				
-		virtual void applyChanges() = 0;
-		virtual void restoreDefaults() = 0;
-	
-	signals:
-		void settingsChanged();
-		
-	protected:		
-		QSettings settings;
-};
+    Q_OBJECT
 
+public:
+    PreferencesPage(QWidget *parent = 0);
+
+    virtual void applyChanges() = 0;
+    virtual void restoreDefaults() = 0;
+
+signals:
+    void settingsChanged();
+
+protected:
+    QSettings settings;
+};
 #endif 

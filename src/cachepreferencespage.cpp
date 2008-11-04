@@ -23,36 +23,36 @@
 #include "cachepreferencespage.h"
 
 CachePreferencesPage::CachePreferencesPage( QWidget *parent ) 
-	: PreferencesPage(parent), Ui::CachePreferencesPage()
+    : PreferencesPage(parent), Ui::CachePreferencesPage()
 {
-	setupUi(this);
-	
-	groupBox->setChecked(settings.value("settings/cache_enabled", false).toBool());
-	cacheEdit->setText(settings.value("settings/cache_dir", QDir::homePath() + "/QMapControl.cache").toString());
-	
-	connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseDirectory()));
-	connect(groupBox, SIGNAL(toggled(bool)), this, SIGNAL(settingsChanged()));
-	connect(cacheEdit, SIGNAL(textChanged(const QString &)), this, SIGNAL(settingsChanged()));
+    setupUi(this);
+
+    groupBox->setChecked(settings.value("settings/cache_enabled", false).toBool());
+    cacheEdit->setText(settings.value("settings/cache_dir", QDir::homePath() + "/QMapControl.cache").toString());
+
+    connect(chooseButton, SIGNAL(clicked()), this, SLOT(chooseDirectory()));
+    connect(groupBox, SIGNAL(toggled(bool)), this, SIGNAL(settingsChanged()));
+    connect(cacheEdit, SIGNAL(textChanged(const QString &)), this, SIGNAL(settingsChanged()));
 }
 
 void CachePreferencesPage::applyChanges()
 {
-	settings.setValue("settings/cache_enabled", groupBox->isChecked());
-	settings.setValue("settings/cache_dir", cacheEdit->text());
+    settings.setValue("settings/cache_enabled", groupBox->isChecked());
+    settings.setValue("settings/cache_dir", cacheEdit->text());
 }
 
 void CachePreferencesPage::restoreDefaults()
 {
-	settings.setValue("settings/cache_enabled", false);
-	settings.setValue("settings/cache_dir", QDir::homePath() + "/QMapControl.cache");	
-	
-	groupBox->setChecked(settings.value("settings/cache_enabled", false).toBool());
-	cacheEdit->setText(settings.value("settings/cache_dir", QDir::homePath() + "/QMapControl.cache").toString());	
+    settings.setValue("settings/cache_enabled", false);
+    settings.setValue("settings/cache_dir", QDir::homePath() + "/QMapControl.cache");
+
+    groupBox->setChecked(settings.value("settings/cache_enabled", false).toBool());
+    cacheEdit->setText(settings.value("settings/cache_dir", QDir::homePath() + "/QMapControl.cache").toString());
 }
 
 void CachePreferencesPage::chooseDirectory()
 {
-	QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Cache Directory"), QDir::homePath(), QFileDialog::ShowDirsOnly);
-	if (!dir.isEmpty())
-		cacheEdit->setText(dir);
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Cache Directory"), QDir::homePath(), QFileDialog::ShowDirsOnly);
+    if (!dir.isEmpty())
+        cacheEdit->setText(dir);
 }
