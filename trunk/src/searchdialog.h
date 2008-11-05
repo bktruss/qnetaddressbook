@@ -24,6 +24,7 @@
 #include "ui_searchdialog.h"
 
 class QSqlQueryModel;
+class QCheckBox;
 class SearchDialog : public QDialog, Ui::SearchDialog
 {
     Q_OBJECT
@@ -35,11 +36,13 @@ public:
 private slots:
     void performSearch();
     void networkSelected(const QModelIndex &index);
+    void validate();
 
 signals:
     void networkSelected(const QPointF &coordinate);
 
 private:
     QSqlQueryModel *model;
+    QList<QCheckBox *> checkBoxes;
 };
 #endif // SEARCHDIALOG_H
