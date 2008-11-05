@@ -22,8 +22,11 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QRegExp>
 
 #include "searchdialog.h"
+
+#include <QDebug>
 
 SearchDialog::SearchDialog(QWidget *parent) :
         QDialog(parent), Ui::SearchDialog()
@@ -31,10 +34,14 @@ SearchDialog::SearchDialog(QWidget *parent) :
     model = new QSqlQueryModel(this);
 
     setupUi(this);
+    checkBoxes = qFindChildren<QCheckBox *>(this, QRegExp(".+Check"));
     resultTable->setModel(model);
     resultTable->setVisible(false);
     connect(searchButton, SIGNAL(clicked()), this, SLOT(performSearch()));
     connect(resultTable, SIGNAL(activated(const QModelIndex &)), this, SLOT(networkSelected(const QModelIndex &)));
+    foreach(QCheckBox *checkBox, checkBoxes){
+        connect(checkBox, SIGNAL(toggled(bool)), this, SLOT(validate()));
+    }
 }
 
 void SearchDialog::performSearch()
@@ -74,6 +81,7 @@ void SearchDialog::performSearch()
     }
 
     model->setQuery(query);
+    resultTable->resizeColumnsToContents();
     resultTable->setVisible(true);
 }
 
@@ -83,4 +91,15 @@ void SearchDialog::networkSelected(const QModelIndex &index)
     coordinate.setX(model->record(index.row()).value("lon").toDouble());
     coordinate.setY(model->record(index.row()).value("lat").toDouble());
     emit networkSelected(coordinate);
+}
+
+void SearchDialog::validate()
+{
+    searchButton->setEnabled(false);
+    foreach(QCheckBox *checkBox, checkBoxes){
+        if(checkBox->isChecked()){
+            searchButton->setEnabled(true);
+            return;
+        }
+    }
 }
