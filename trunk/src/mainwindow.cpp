@@ -264,6 +264,8 @@ void MainWindow::setupActions()
 void MainWindow::setActionsEnabled(bool enabled)
 {
     /* File */
+    actionNew->setEnabled(!enabled);
+    actionOpen->setEnabled(!enabled);
     actionClose->setEnabled(enabled);
     actionImportKismetCSV->setEnabled(enabled);
     actionImportKismetXML->setEnabled(enabled);
