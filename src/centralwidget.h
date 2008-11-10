@@ -32,6 +32,7 @@ using namespace qmapcontrol;
 class QIODevice;
 class QResizeEvent;
 class QDomNode;
+class QDataStream;
 class CentralWidget : public QWidget
 {
     Q_OBJECT
@@ -51,6 +52,7 @@ public:
     /* Import Networks */
     void importNetworksFromCSV(QIODevice &device);
     void importNetworksFromXML(QIODevice &device);
+    void importNetworksFromNetstumbler(QIODevice &device);
 
 public slots:
     /* Add Network */
@@ -84,6 +86,7 @@ private slots:
     void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
     void importNetwork(const QString &line);
     void importNetwork(const QDomNode &node);
+    void importNetwork(QDataStream &stream);
 
 signals:
     void viewChanged(const QPointF &coordinate, int zoom);

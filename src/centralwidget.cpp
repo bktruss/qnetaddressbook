@@ -26,6 +26,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QTextStream>
+#include <QDataStream>
 #include <QIODevice>
 #include <QDir>
 #include <QStringList>
@@ -139,6 +140,32 @@ void CentralWidget::importNetworksFromXML(QIODevice &device)
     loadNetworks();
 }
 
+void CentralWidget::importNetworksFromNetstumbler(QIODevice &device)
+{
+    /* NS1 File format http://www.stumbler.net/ns1files.html */
+    QDataStream stream(&device);
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    char *signature = new char[5];
+    quint32 version;
+
+    stream.readRawData(signature, 4);
+    signature[5] = 0;
+
+    stream >> version;
+
+    /* Verify singature and file version */
+    if (QString(signature) != "NetS" || version != 12){
+        QMessageBox::warning(this, tr("Error"), tr("Invalid file format."));
+        delete[] signature;
+        return;
+    }
+    quint32 apCount;
+    stream >> apCount;  // Get the number of entries
+    for (quint32 i = 0; i < apCount; i++){
+        importNetwork(stream);
+    }
+}
 
 void CentralWidget::addNetwork()
 {
@@ -347,6 +374,93 @@ void CentralWidget::importNetwork(const QDomNode &node)
     query.bindValue(":bssid", BSSID);
     query.bindValue(":channel", channel);
     query.bindValue(":signal", 0); //we can't get this value from XML file
+    query.bindValue(":lat", latitude);
+    query.bindValue(":lon", longitude);
+    query.bindValue(":encryption", encryption);
+    if(!query.exec()){
+        if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows.
+            QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
+            return;
+        }
+    }
+}
+
+void CentralWidget::importNetwork(QDataStream &stream)
+{
+    // SSID
+    quint8 ssidLength = 0;
+    stream >> ssidLength;
+    char *rawSsid = new char[ssidLength + 1];
+    stream.readRawData(rawSsid, ssidLength);
+    rawSsid[ssidLength + 1] = 0;
+    QString SSID = rawSsid;
+    delete[] rawSsid;
+
+    // BSSID
+    quint8 rawBssid[6];
+    QString BSSID = "%1:%2:%3:%4:%5:%6";
+    for (int i = 0; i < 6; i++){
+        stream >> rawBssid[i];
+        BSSID.arg(rawBssid[i]);
+    }
+
+    // SIGNAL
+    qint32 signal;
+    stream >> signal;
+    stream.skipRawData(8);
+
+    // Encryption
+    quint32 flags;
+    stream >> flags;
+    NetworkEncryption encryption;
+    if (flags & 0x0010) // bitwise AND between flags and encrpytion mask 0x0010
+        encryption = None;
+    else
+        encryption = WEP;
+
+    // Skip useless data
+    stream.skipRawData(20);
+
+    // Coordinates
+    double latitude;
+    double longitude;
+    stream >> latitude >> longitude;
+    if (latitude == 0 || longitude == 0)
+        return;
+
+    // Skip useless data
+    quint32 dataCount;
+    stream >> dataCount;
+    for (quint32 i = 0; i < dataCount; i++){
+        stream.skipRawData(16);
+        qint32 locationSource;
+        stream >> locationSource;
+        if (locationSource)
+            stream.skipRawData(60);
+    }
+
+    // Skip useless data
+    quint8 nameLength;
+    stream >> nameLength;
+    stream.skipRawData(nameLength + 8);
+
+    // Channel
+    quint32 channel;
+    stream >> channel;
+
+    // Skip useless data
+    stream.skipRawData(28);
+    quint32 ieLength;
+    stream >> ieLength;
+    for(quint32 i = 0; i < ieLength; i++)
+        stream.skipRawData(1);
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,:signal,:encryption)");
+    query.bindValue(":essid",SSID);
+    query.bindValue(":bssid", BSSID);
+    query.bindValue(":channel", channel);
+    query.bindValue(":signal", signal); //we can't get this value from XML file
     query.bindValue(":lat", latitude);
     query.bindValue(":lon", longitude);
     query.bindValue(":encryption", encryption);

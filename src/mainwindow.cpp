@@ -136,7 +136,7 @@ void MainWindow::closeFile()
     setActionsEnabled(false);
 }
 
-void MainWindow::importFileCSV()
+void MainWindow::importKismetCSV()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet CSV File"), QString(), tr("Kismet CSV Files (*.csv)"));
     if(filename.isEmpty())
@@ -147,7 +147,7 @@ void MainWindow::importFileCSV()
     file.close();
 }
 
-void MainWindow::importFileXML()
+void MainWindow::importKismetXML()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet XML File"), QString(), tr("Kismet XML files (*.xml)"));
     if(filename.isEmpty())
@@ -155,6 +155,18 @@ void MainWindow::importFileXML()
     QFile file(filename);
     if(file.open(QIODevice::ReadOnly))
         w->importNetworksFromXML(file);
+
+    file.close();
+}
+
+void MainWindow::importNetstumbler()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Import Netstumbler File"), QString(), tr("Netstumbler files (*.ns1)"));
+    if(filename.isEmpty())
+        return;
+    QFile file(filename);
+    if(file.open(QIODevice::ReadOnly))
+        w->importNetworksFromNetstumbler(file);
 
     file.close();
 }
@@ -207,10 +219,13 @@ void MainWindow::setupActions()
     connect(actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
 
     actionImportKismetCSV->setStatusTip(tr("Imports Kismet CSV file"));
-    connect(actionImportKismetCSV, SIGNAL(triggered()), this, SLOT(importFileCSV()));
+    connect(actionImportKismetCSV, SIGNAL(triggered()), this, SLOT(importKismetCSV()));
 
     actionImportKismetXML->setStatusTip(tr("Imports Kismet XML file"));
-    connect(actionImportKismetXML, SIGNAL(triggered()), this, SLOT(importFileXML()));
+    connect(actionImportKismetXML, SIGNAL(triggered()), this, SLOT(importKismetXML()));
+
+    actionImportNetstumbler->setStatusTip(tr("Imports Netstumbler log file"));
+    connect(actionImportNetstumbler, SIGNAL(triggered()), this, SLOT(importNetstumbler()));
 
     actionQuit->setStatusTip(tr("Quits the application"));
     actionQuit->setShortcut(QKeySequence("Ctrl+Q"));
@@ -269,6 +284,7 @@ void MainWindow::setActionsEnabled(bool enabled)
     actionClose->setEnabled(enabled);
     actionImportKismetCSV->setEnabled(enabled);
     actionImportKismetXML->setEnabled(enabled);
+    actionImportNetstumbler->setEnabled(enabled);
 
     /* Edit */
     actionAddNetwork->setEnabled(enabled);
