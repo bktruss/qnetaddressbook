@@ -84,15 +84,15 @@ private slots:
     /* Real methods to do things*/
     void showNetwork(Geometry *geometry, QPoint point);
     void setVisibleNetworks(NetworkEncryption encryption, bool visible) { layers[encryption]->setVisible(visible); }
-    void importNetwork(const QString &line);
-    void importNetwork(const QDomNode &node);
-    void importNetwork(QDataStream &stream);
 
 signals:
     void viewChanged(const QPointF &coordinate, int zoom);
 
 private:
     void addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name);
+    void importNetwork(const QString &line);
+    void importNetwork(const QDomNode &node);
+    void importNetwork(QDataStream &stream);
 
     MapControl *control;
     MapAdapter *adapter;
