@@ -87,9 +87,10 @@ CentralWidget::CentralWidget( QWidget *parent )
 void CentralWidget::loadNetworks()
 {
     QSqlQuery query;
-    if(!query.exec("SELECT bssid, lat, lon, encryption FROM networks"))
+    if(!query.exec("SELECT bssid, lat, lon, encryption FROM networks")){
+        QMessageBox::critical(this, query.lastError().driverText(), query.lastError().databaseText());
         return;
-
+    }
     while(query.next()){
         QString bssid = query.value(0).toString();
         qreal lat = query.value(1).toDouble();
@@ -103,6 +104,10 @@ void CentralWidget::importNetworksFromCSV(QIODevice &device)
 {
     QTextStream stream(&device);
 
+    if (stream.readLine() != "Network;NetType;ESSID;BSSID;Info;Channel;Cloaked;Encryption;Decrypted;MaxRate;MaxSeenRate;Beacon;LLC;Data;Crypt;Weak;Total;Carrier;Encoding;FirstTime;LastTime;BestQuality;BestSignal;BestNoise;GPSMinLat;GPSMinLon;GPSMinAlt;GPSMinSpd;GPSMaxLat;GPSMaxLon;GPSMaxAlt;GPSMaxSpd;GPSBestLat;GPSBestLon;GPSBestAlt;DataSize;IPType;IP;"){
+        QMessageBox::warning(this, tr("Error"), tr("Invalid CSV Kismet log."));
+        return;
+    }
     while(!stream.atEnd()){
         QString line = stream.readLine();
         importNetwork(line);
@@ -117,7 +122,7 @@ void CentralWidget::importNetworksFromXML(QIODevice &device)
     QDomDocument doc("XML import");
     QString error;
     if (!doc.setContent(&device, &error)) {
-        qDebug("Error while opening");
+        QMessageBox::warning(this, tr("Error"), tr("Error opening XML Kismet log: %1").arg(error));
         return;
     }
 
@@ -125,7 +130,7 @@ void CentralWidget::importNetworksFromXML(QIODevice &device)
     // of the outermost element.
     QDomElement root = doc.documentElement();
     if (root.tagName() != "detection-run") {
-        QMessageBox::warning(this, "Error", tr("Invalid XML file"));
+        QMessageBox::warning(this, "Error", tr("Invalid XML Kismet log."));
         return;
     }
 
@@ -156,7 +161,7 @@ void CentralWidget::importNetworksFromNetstumbler(QIODevice &device)
 
     /* Verify singature and file version */
     if (QString(signature) != "NetS" || version != 12){
-        QMessageBox::warning(this, tr("Error"), tr("Invalid file format."));
+        QMessageBox::warning(this, tr("Error"), tr("Invalid Netstumbler Log."));
         delete[] signature;
         return;
     }
@@ -216,6 +221,11 @@ void CentralWidget::moveTo(const QPointF &coordinate)
     control->setZoom(17);
 }
 
+void CentralWidget::resizeEvent(QResizeEvent *event)
+{
+    control->resize(event->size() - QSize (1,1));
+}
+
 void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 {
     QSqlQuery query;
@@ -270,6 +280,29 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
         clearNetworks();
         loadNetworks();
     }
+}
+
+void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name)
+{
+    QPen pen;
+    switch(encryption){
+                case None:
+        pen.setColor(QColor(Qt::red));
+        break;
+                case WEP:
+        pen.setColor(QColor(Qt::yellow));
+        break;
+                case WPA:
+        pen.setColor(QColor(Qt::blue));
+        break;
+                case WPA2:
+        pen.setColor(QColor(Qt::green));
+    }
+    pen.setWidth(3);
+
+    CirclePoint *network = new CirclePoint(x, y, 15, name, qmapcontrol::Point::Middle, &pen);
+    connect(network, SIGNAL(geometryClicked(Geometry *, QPoint)), this, SLOT(showNetwork(Geometry *, QPoint)));
+    layers[encryption]->addGeometry(network);
 }
 
 void CentralWidget::importNetwork(const QString &line)
@@ -470,33 +503,5 @@ void CentralWidget::importNetwork(QDataStream &stream)
             return;
         }
     }
-}
-
-void CentralWidget::resizeEvent(QResizeEvent *event)
-{
-    control->resize(event->size() - QSize (1,1));
-}
-
-void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name)
-{
-    QPen pen;
-    switch(encryption){
-                case None:
-        pen.setColor(QColor(Qt::red));
-        break;
-                case WEP:
-        pen.setColor(QColor(Qt::yellow));
-        break;
-                case WPA:
-        pen.setColor(QColor(Qt::blue));
-        break;
-                case WPA2:
-        pen.setColor(QColor(Qt::green));
-    }
-    pen.setWidth(3);
-
-    CirclePoint *network = new CirclePoint(x, y, 15, name, qmapcontrol::Point::Middle, &pen);
-    connect(network, SIGNAL(geometryClicked(Geometry *, QPoint)), this, SLOT(showNetwork(Geometry *, QPoint)));
-    layers[encryption]->addGeometry(network);
 }
 
