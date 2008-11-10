@@ -41,8 +41,9 @@ private slots:
     void newFile();
     void openFile();
     void closeFile();
-    void importFileCSV();
-    void importFileXML();
+    void importKismetCSV();
+    void importKismetXML();
+    void importNetstumbler();
     void showFindDialog();
     void showPreferencesDialog();
     void showAbout();

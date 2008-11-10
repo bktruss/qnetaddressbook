@@ -49,6 +49,7 @@
       <addaction name="actionImportKismetXML"/>
      </widget>
      <addaction name="menuKismet"/>
+     <addaction name="actionImportNetstumbler"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -202,7 +203,7 @@
   </action>
   <action name="actionOpenNetworks">
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checkable">
     <bool>true</bool>
@@ -220,7 +221,7 @@
   </action>
   <action name="actionWEPNetworks">
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checkable">
     <bool>true</bool>
@@ -238,7 +239,7 @@
   </action>
   <action name="actionWPANetworks">
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checkable">
     <bool>true</bool>
@@ -256,7 +257,7 @@
   </action>
   <action name="actionWPA2Networks">
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checkable">
     <bool>true</bool>
@@ -333,6 +334,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionImportNetstumbler">
+   <property name="text">
+    <string>&amp;Netstumbler</string>
+   </property>
+   <property name="toolTip">
+    <string>Import netstumbler log file</string>
    </property>
   </action>
  </widget>
