@@ -25,15 +25,6 @@
 #include <QMessageBox>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QTextStream>
-#include <QDataStream>
-#include <QIODevice>
-#include <QDir>
-#include <QStringList>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomNode>
-#include <QDomText>
 
 #include "centralwidget.h"
 #include "osmmapadapter.h"
@@ -43,6 +34,7 @@
 #include "circlepoint.h"
 
 #include "networkdialog.h"
+
 
 CentralWidget::CentralWidget( QWidget *parent ) 
     : QWidget(parent)
@@ -100,78 +92,6 @@ void CentralWidget::loadNetworks()
     }
 }
 
-void CentralWidget::importNetworksFromCSV(QIODevice &device)
-{
-    QTextStream stream(&device);
-
-    if (stream.readLine() != "Network;NetType;ESSID;BSSID;Info;Channel;Cloaked;Encryption;Decrypted;MaxRate;MaxSeenRate;Beacon;LLC;Data;Crypt;Weak;Total;Carrier;Encoding;FirstTime;LastTime;BestQuality;BestSignal;BestNoise;GPSMinLat;GPSMinLon;GPSMinAlt;GPSMinSpd;GPSMaxLat;GPSMaxLon;GPSMaxAlt;GPSMaxSpd;GPSBestLat;GPSBestLon;GPSBestAlt;DataSize;IPType;IP;"){
-        QMessageBox::warning(this, tr("Error"), tr("Invalid CSV Kismet log."));
-        return;
-    }
-    while(!stream.atEnd()){
-        QString line = stream.readLine();
-        importNetwork(line);
-    }
-
-    clearNetworks();
-    loadNetworks();
-}
-
-void CentralWidget::importNetworksFromXML(QIODevice &device) 
-{
-    QDomDocument doc("XML import");
-    QString error;
-    if (!doc.setContent(&device, &error)) {
-        QMessageBox::warning(this, tr("Error"), tr("Error opening XML Kismet log: %1").arg(error));
-        return;
-    }
-
-    // print out the element names of all elements that are direct children
-    // of the outermost element.
-    QDomElement root = doc.documentElement();
-    if (root.tagName() != "detection-run") {
-        QMessageBox::warning(this, "Error", tr("Invalid XML Kismet log."));
-        return;
-    }
-
-    QDomNodeList networks = root.childNodes(); //node wireless-network
-
-    //first cycle on networks
-    for (unsigned int i= 0; i < networks.length(); ++i) {
-        importNetwork(networks.item(i));
-    }
-
-    clearNetworks();
-    loadNetworks();
-}
-
-void CentralWidget::importNetworksFromNetstumbler(QIODevice &device)
-{
-    /* NS1 File format http://www.stumbler.net/ns1files.html */
-    QDataStream stream(&device);
-    stream.setByteOrder(QDataStream::LittleEndian);
-
-    char *signature = new char[5];
-    quint32 version;
-
-    stream.readRawData(signature, 4);
-    signature[5] = 0;
-
-    stream >> version;
-
-    /* Verify singature and file version */
-    if (QString(signature) != "NetS" || version != 12){
-        QMessageBox::warning(this, tr("Error"), tr("Invalid Netstumbler Log."));
-        delete[] signature;
-        return;
-    }
-    quint32 apCount;
-    stream >> apCount;  // Get the number of entries
-    for (quint32 i = 0; i < apCount; i++){
-        importNetwork(stream);
-    }
-}
-
 void CentralWidget::addNetwork()
 {
     QPointF coordinate = control->currentCoordinate();
@@ -198,6 +118,29 @@ void CentralWidget::addNetwork()
         clearNetworks();
         loadNetworks();
     }
+}
+
+void CentralWidget::importNetworks(QList<Network> networks)
+{
+    foreach(Network network, networks){
+        QSqlQuery query;
+        query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,:comment,:encryption)");
+        query.bindValue(":essid", network.essid);
+        query.bindValue(":bssid", network.bssid);
+        query.bindValue(":channel", network.channel);
+        query.bindValue(":signal", network.signal);
+        query.bindValue(":lat", network.lat);
+        query.bindValue(":lon", network.lon);
+        query.bindValue(":encryption", network.encryption);
+        if(!query.exec()){
+            if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows.
+                QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
+                return;
+            }
+        }
+    }
+    clearNetworks();
+    loadNetworks();
 }
 
 void CentralWidget::clearNetworks()
@@ -304,204 +247,3 @@ void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, Q
     connect(network, SIGNAL(geometryClicked(Geometry *, QPoint)), this, SLOT(showNetwork(Geometry *, QPoint)));
     layers[encryption]->addGeometry(network);
 }
-
-void CentralWidget::importNetwork(const QString &line)
-{
-    QStringList fields = line.split(";");
-    NetworkEncryption encryption = None;
-
-    if(fields.at(1) != "infrastructure")
-        return;
-
-    if(fields.at(2) == "<no ssid>")
-        return;
-
-    if(fields.at(7).contains("None"))
-        encryption = None;
-
-    if(fields.at(7).contains("WEP"))
-        encryption = WEP;
-
-    if(fields.at(7).contains("TKIP"))
-        encryption = WPA;
-
-    if(fields.at(7).contains("AES-CCM"))
-        encryption = WPA2;
-
-    QSqlQuery query;
-    query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,NULL,:encryption)");
-    query.bindValue(":essid", fields.at(2));
-    query.bindValue(":bssid", fields.at(3));
-    query.bindValue(":channel", fields.at(5));
-    query.bindValue(":signal", fields.at(22));
-    query.bindValue(":lat", fields.at(32));
-    query.bindValue(":lon", fields.at(33));
-    query.bindValue(":encryption", encryption);
-    if(!query.exec()){
-        if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows.
-            QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
-            return;
-        }
-    }
-}
-
-void CentralWidget::importNetwork(const QDomNode &node)
-{
-    QString SSID;
-    QString BSSID;
-    QString channel;
-    //QString maxrate;
-    QString longitude;
-    QString latitude;
-    NetworkEncryption encryption = None;
-    QDomNodeList elements = node.childNodes();
-
-    for (unsigned int i = 0; i < elements.length(); ++i) {
-        QDomNode element = elements.item(i);
-        QDomElement e = element.toElement(); // try to convert the node to an element.
-        if(!e.isNull()) {
-            if (e.tagName() == "SSID") {
-                SSID = e.text();
-            }
-            if (e.tagName() == "BSSID") {
-                BSSID = e.text();
-            }
-            if (e.tagName() == "channel") {
-                channel = e.text();
-            }
-            //if (e.tagName() == "maxrate") {
-            //	maxrate = e.text();
-            //}
-            if (e.tagName() == "gps-info") {
-                QDomNodeList locations = e.childNodes();
-                for (unsigned int i = 0; i < locations.length(); ++i) {
-                    QDomNode location = locations.item(i);
-                    QDomElement l = location.toElement(); // try to convert the node to an element.
-                    //we could also calculate the media among min lat and max lat
-                    if (l.tagName() == "min-lat") {
-                        latitude = l.text();
-                    }
-                    if (l.tagName() == "min-lon") {
-                        longitude = l.text();
-                    }
-                }
-            }
-            //the last encryption is the strongest
-            if (e.tagName() == "encryption") {
-                if (e.text() == "None")
-                    encryption = None;
-                if (e.text() == "WEP")
-                    encryption = WEP;
-                if (e.text() == "WPA" || e.text() == "TKIP")
-                    encryption = WPA;
-                if (e.text() == "AES-CCM")
-                    encryption = WPA2;
-            }
-        }
-    }
-
-    QSqlQuery query;
-    query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,NULL,:encryption)");
-    query.bindValue(":essid",SSID);
-    //qDebug(SSID.toUtf8());
-    query.bindValue(":bssid", BSSID);
-    query.bindValue(":channel", channel);
-    query.bindValue(":signal", 0); //we can't get this value from XML file
-    query.bindValue(":lat", latitude);
-    query.bindValue(":lon", longitude);
-    query.bindValue(":encryption", encryption);
-    if(!query.exec()){
-        if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows.
-            QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
-            return;
-        }
-    }
-}
-
-void CentralWidget::importNetwork(QDataStream &stream)
-{
-    // SSID
-    quint8 ssidLength = 0;
-    stream >> ssidLength;
-    char *rawSsid = new char[ssidLength + 1];
-    stream.readRawData(rawSsid, ssidLength);
-    rawSsid[ssidLength + 1] = 0;
-    QString SSID = rawSsid;
-    delete[] rawSsid;
-
-    // BSSID
-    quint8 rawBssid[6];
-    QString BSSID = "%1:%2:%3:%4:%5:%6";
-    for (int i = 0; i < 6; i++){
-        stream >> rawBssid[i];
-        BSSID.arg(rawBssid[i]);
-    }
-
-    // SIGNAL
-    qint32 signal;
-    stream >> signal;
-    stream.skipRawData(8);
-
-    // Encryption
-    quint32 flags;
-    stream >> flags;
-    NetworkEncryption encryption;
-    if (flags & 0x0010) // bitwise AND between flags and encrpytion mask 0x0010
-        encryption = None;
-    else
-        encryption = WEP;
-
-    // Skip useless data
-    stream.skipRawData(20);
-
-    // Coordinates
-    double latitude;
-    double longitude;
-    stream >> latitude >> longitude;
-    if (latitude == 0 || longitude == 0)
-        return;
-
-    // Skip useless data
-    quint32 dataCount;
-    stream >> dataCount;
-    for (quint32 i = 0; i < dataCount; i++){
-        stream.skipRawData(16);
-        qint32 locationSource;
-        stream >> locationSource;
-        if (locationSource)
-            stream.skipRawData(60);
-    }
-
-    // Skip useless data
-    quint8 nameLength;
-    stream >> nameLength;
-    stream.skipRawData(nameLength + 8);
-
-    // Channel
-    quint32 channel;
-    stream >> channel;
-
-    // Skip useless data
-    stream.skipRawData(28);
-    quint32 ieLength;
-    stream >> ieLength;
-    for(quint32 i = 0; i < ieLength; i++)
-        stream.skipRawData(1);
-
-    QSqlQuery query;
-    query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,:signal,:encryption)");
-    query.bindValue(":essid",SSID);
-    query.bindValue(":bssid", BSSID);
-    query.bindValue(":channel", channel);
-    query.bindValue(":signal", signal); //we can't get this value from XML file
-    query.bindValue(":lat", latitude);
-    query.bindValue(":lon", longitude);
-    query.bindValue(":encryption", encryption);
-    if(!query.exec()){
-        if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows.
-            QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
-            return;
-        }
-    }
-}
-

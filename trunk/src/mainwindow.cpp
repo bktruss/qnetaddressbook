@@ -21,8 +21,8 @@
  ***************************************************************************/
 #include <QSettings>
 #include <QMessageBox>
-#include <QFrame>
 #include <QDir>
+#include <QPluginLoader>
 #include <QFileDialog>
 #include <QKeySequence>
 #include <QSqlDatabase>
@@ -38,6 +38,9 @@
 #include "centralwidget.h"
 #include "searchdialog.h"
 #include "preferencesdialog.h"
+#include "interfaces.h"
+
+#include <QDebug>
 
 MainWindow::MainWindow( QWidget * parent, Qt::WFlags f) 
     : QMainWindow(parent, f)
@@ -69,6 +72,31 @@ MainWindow::MainWindow( QWidget * parent, Qt::WFlags f)
 #endif
     restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
 }
+
+void MainWindow::loadPlugins()
+{
+    QDir pluginsDir = QDir(qApp->applicationDirPath());
+
+ #if defined(Q_OS_WIN)
+     if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+         pluginsDir.cdUp();
+ #elif defined(Q_OS_MAC)
+     if (pluginsDir.dirName() == "MacOS") {
+         pluginsDir.cdUp();
+     }
+ #endif
+     pluginsDir.cd("plugins");
+
+     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+         QObject *plugin = loader.instance();
+         if (plugin) {
+             populateMenus(plugin);
+             pluginLoaders.append(&loader);
+         }
+     }
+     menuImport->setHidden(menuImport->actions().isEmpty());
+ }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -136,41 +164,6 @@ void MainWindow::closeFile()
     setActionsEnabled(false);
 }
 
-void MainWindow::importKismetCSV()
-{
-    QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet CSV File"), QString(), tr("Kismet CSV Files (*.csv)"));
-    if(filename.isEmpty())
-        return;
-    QFile file(filename);
-    if(file.open(QIODevice::ReadOnly))
-        w->importNetworksFromCSV(file);
-    file.close();
-}
-
-void MainWindow::importKismetXML()
-{
-    QString filename = QFileDialog::getOpenFileName(this, tr("Import Kismet XML File"), QString(), tr("Kismet XML files (*.xml)"));
-    if(filename.isEmpty())
-        return;
-    QFile file(filename);
-    if(file.open(QIODevice::ReadOnly))
-        w->importNetworksFromXML(file);
-
-    file.close();
-}
-
-void MainWindow::importNetstumbler()
-{
-    QString filename = QFileDialog::getOpenFileName(this, tr("Import Netstumbler File"), QString(), tr("Netstumbler files (*.ns1)"));
-    if(filename.isEmpty())
-        return;
-    QFile file(filename);
-    if(file.open(QIODevice::ReadOnly))
-        w->importNetworksFromNetstumbler(file);
-
-    file.close();
-}
-
 void MainWindow::showFindDialog()
 {
     SearchDialog dialog(this);
@@ -203,6 +196,26 @@ void MainWindow::updateStatusBar(const QPointF &coordinate, int zoom)
     statusLabel[2]->setText(tr("Zoom: %1").arg(zoom));
 }
 
+void MainWindow::importNetworks()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    ImportInterface *importInterface = qobject_cast<ImportInterface *>(action->parent());
+
+    QString filename = QFileDialog::getOpenFileName(this, tr("Import Networks"), QString(), importInterface->fileNameFilter());
+    if(filename.isEmpty())
+        return;
+    QFile file(filename);
+    if(file.open(QIODevice::ReadOnly)){
+       QList<Network> networks = importInterface->importNetworks(file);
+       if(networks.isEmpty() && !importInterface->errorText().isEmpty()){
+           QMessageBox::warning(this, tr("Error importing networks"), importInterface->errorText());
+           return;
+       }
+       w->importNetworks(networks);
+   }
+   file.close();
+}
+
 void MainWindow::setupActions()
 {
     /* File */
@@ -217,15 +230,6 @@ void MainWindow::setupActions()
     actionClose->setStatusTip(tr("Closes the network database"));
     actionClose->setShortcut(QKeySequence(QKeySequence::Close));
     connect(actionClose, SIGNAL(triggered()), this, SLOT(closeFile()));
-
-    actionImportKismetCSV->setStatusTip(tr("Imports Kismet CSV file"));
-    connect(actionImportKismetCSV, SIGNAL(triggered()), this, SLOT(importKismetCSV()));
-
-    actionImportKismetXML->setStatusTip(tr("Imports Kismet XML file"));
-    connect(actionImportKismetXML, SIGNAL(triggered()), this, SLOT(importKismetXML()));
-
-    actionImportNetstumbler->setStatusTip(tr("Imports Netstumbler log file"));
-    connect(actionImportNetstumbler, SIGNAL(triggered()), this, SLOT(importNetstumbler()));
 
     actionQuit->setStatusTip(tr("Quits the application"));
     actionQuit->setShortcut(QKeySequence("Ctrl+Q"));
@@ -282,9 +286,7 @@ void MainWindow::setActionsEnabled(bool enabled)
     actionNew->setEnabled(!enabled);
     actionOpen->setEnabled(!enabled);
     actionClose->setEnabled(enabled);
-    actionImportKismetCSV->setEnabled(enabled);
-    actionImportKismetXML->setEnabled(enabled);
-    actionImportNetstumbler->setEnabled(enabled);
+    menuImport->setEnabled(enabled);
 
     /* Edit */
     actionAddNetwork->setEnabled(enabled);
@@ -296,3 +298,17 @@ void MainWindow::setActionsEnabled(bool enabled)
     actionWPANetworks->setEnabled(enabled);
     actionWPA2Networks->setEnabled(enabled);
 }
+
+void MainWindow::populateMenus(QObject *plugin)
+ {
+     ImportInterface *importInterface = qobject_cast<ImportInterface *>(plugin);
+     if (importInterface)
+         addToMenu(plugin, importInterface->name(), menuImport, SLOT(importNetworks()));
+ }
+
+ void MainWindow::addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member)
+ {
+     QAction *action = new QAction(text, plugin);
+     connect(action, SIGNAL(triggered()), this, member);
+     menu->addAction(action);
+ }

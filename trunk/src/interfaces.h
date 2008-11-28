@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
- *   Copyright (C) 2008 by Andrea Decorte                                  *
- *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,48 +17,36 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef INTERFACES_H
+#define INTERFACES_H
 
-#include <QMainWindow>
-#include "ui_mainwindow.h"
+#include <QtPlugin>
+#include <QString>
+#include <QIODevice>
 
-class CentralWidget;
-class QLabel;
-class QPluginLoader;
-class MainWindow : public QMainWindow, public Ui::MainWindow
-{
-    Q_OBJECT
-
-public:
-    MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
-    void loadPlugins();
-
-protected:
-    void closeEvent(QCloseEvent *event);
-
-private slots:
-    void newFile();
-    void openFile();
-    void closeFile();
-    void showFindDialog();
-    void showPreferencesDialog();
-    void showAbout();
-    void updateStatusBar(const QPointF &coordinate, int zoom);
-    void importNetworks();
-
-private:
-    void setupActions();
-    void setActionsEnabled(bool enabled);
-    void populateMenus(QObject *plugin);
-    void addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member);
-
-    CentralWidget *w;
-    QVector<QLabel*> statusLabel;
-    QList<QPluginLoader*> pluginLoaders;
+struct Network {
+    QString essid;
+    QString bssid;
+    int channel;
+    int signal;
+    double lat;
+    double lon;
+    QString comment;
+    int encryption;
 };
-#endif
 
+class ImportInterface
+{
+public:
+    virtual ~ImportInterface() {}
 
+    virtual QString name() const = 0;
+    virtual QString description() const = 0;
+    virtual QString author() const = 0;
+    virtual QString fileNameFilter() const = 0;
+    virtual QList<Network> importNetworks(QIODevice &device) = 0;
+    virtual QString errorText() const = 0;
+};
 
-
+Q_DECLARE_INTERFACE(ImportInterface, "com.googlecode.QNetAddressBook.ImportInterface/1.0");
+#endif // INTERFACES_H
