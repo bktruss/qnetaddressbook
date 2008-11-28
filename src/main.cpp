@@ -20,12 +20,9 @@
 #include <QApplication>
 #include <QSplashScreen>
 #include <QPixmap>
+#include <QDir>
 
 #include "mainwindow.h"
-
-#ifdef Q_WS_MAC
-#include <QDir>
-#endif
 
 int main(int argc, char ** argv)
 {
@@ -34,24 +31,23 @@ int main(int argc, char ** argv)
     QCoreApplication::setApplicationName("QNetAddressBook");
 
     QApplication app( argc, argv );
-#ifdef Q_WS_MAC
-    QDir dir(QApplication::applicationDirPath());
-    dir.cdUp();
-    dir.cd("plugins");
-    QCoreApplication::addLibraryPath(dir.absolutePath());
-#endif
     app.setWindowIcon(QIcon(":/images/icon.png"));
 
     QSplashScreen splash(QPixmap(":images/splash.png"));
     splash.show();
+
     splash.showMessage(QObject::tr("Loading Main Window..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
     app.processEvents();
-
     MainWindow win;
-    win.show();
+
+    splash.showMessage(QObject::tr("Loading Plug-ins..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
+    app.processEvents();
+    win.loadPlugins();
 
     splash.showMessage(QObject::tr("Starting up..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
     app.processEvents();
+    win.show();
+
     splash.finish(&win);
 
     app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );

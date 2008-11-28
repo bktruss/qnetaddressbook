@@ -27,12 +27,11 @@
 #include "mapadapter.h"
 #include "layer.h"
 
+#include "interfaces.h"
+
 using namespace qmapcontrol;
 
-class QIODevice;
 class QResizeEvent;
-class QDomNode;
-class QDataStream;
 class CentralWidget : public QWidget
 {
     Q_OBJECT
@@ -49,15 +48,10 @@ public:
     /* Load Database */
     void loadNetworks();
 
-    /* Import Networks */
-    void importNetworksFromCSV(QIODevice &device);
-    void importNetworksFromXML(QIODevice &device);
-    void importNetworksFromNetstumbler(QIODevice &device);
-
 public slots:
     /* Add Network */
     void addNetwork();
-
+    void importNetworks(QList<Network> networks);
     /* Filter Networks */
     void setVisibleOpenNetworks(bool visible){ setVisibleNetworks(None, visible); }
     void setVisibleWEPNetworks(bool visible){ setVisibleNetworks(WEP, visible); }
@@ -90,9 +84,6 @@ signals:
 
 private:
     void addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name);
-    void importNetwork(const QString &line);
-    void importNetwork(const QDomNode &node);
-    void importNetwork(QDataStream &stream);
 
     MapControl *control;
     MapAdapter *adapter;

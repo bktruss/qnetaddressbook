@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
- *   Copyright (C) 2008 by Andrea Decorte                                  *
- *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,48 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef KISMETCSV_H
+#define KISMETCSV_H
 
-#include <QMainWindow>
-#include "ui_mainwindow.h"
+#include <QObject>
 
-class CentralWidget;
-class QLabel;
-class QPluginLoader;
-class MainWindow : public QMainWindow, public Ui::MainWindow
+#include "interfaces.h"
+
+class QIODevice;
+class KismetCSV : public QObject, public ImportInterface
 {
     Q_OBJECT
+    Q_INTERFACES(ImportInterface)
 
 public:
-    MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
-    void loadPlugins();
+    KismetCSV(QObject *parent = 0);
 
-protected:
-    void closeEvent(QCloseEvent *event);
-
-private slots:
-    void newFile();
-    void openFile();
-    void closeFile();
-    void showFindDialog();
-    void showPreferencesDialog();
-    void showAbout();
-    void updateStatusBar(const QPointF &coordinate, int zoom);
-    void importNetworks();
+    QString name() const;
+    QString description() const;
+    QString author() const;
+    QString fileNameFilter() const;
+    QList<Network> importNetworks(QIODevice &device);
+    QString errorText() const;
 
 private:
-    void setupActions();
-    void setActionsEnabled(bool enabled);
-    void populateMenus(QObject *plugin);
-    void addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member);
-
-    CentralWidget *w;
-    QVector<QLabel*> statusLabel;
-    QList<QPluginLoader*> pluginLoaders;
+    bool importNetwork(const QString &line, Network *network);
+    QString error;
 };
 #endif
-
-
-
-
