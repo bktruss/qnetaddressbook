@@ -1,4 +1,4 @@
 TEMPLATE = subdirs
 
 # Directories
-SUBDIRS += KismetCSV
+SUBDIRS += KismetCSV Netstumbler
