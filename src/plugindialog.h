@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
- *   Copyright (C) 2008 by Andrea Decorte                                  *
- *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,49 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PLUGINDIALOG_H
+#define PLUGINDIALOG_H
 
-#include <QMainWindow>
-#include "ui_mainwindow.h"
+#include <QDialog>
+#include "ui_plugindialog.h"
 
-class CentralWidget;
-class QLabel;
 class QPluginLoader;
-class MainWindow : public QMainWindow, public Ui::MainWindow
+class PluginDialog : public QDialog, public Ui::PluginDialog
 {
     Q_OBJECT
 
 public:
-    MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
-    void loadPlugins();
-
-protected:
-    void closeEvent(QCloseEvent *event);
-
-private slots:
-    void newFile();
-    void openFile();
-    void closeFile();
-    void showFindDialog();
-    void showPreferencesDialog();
-    void showAbout();
-    void showAboutPlugins();
-    void updateStatusBar(const QPointF &coordinate, int zoom);
-    void importNetworks();
+    PluginDialog(QList<QPluginLoader *> pluginLoaders, QWidget *parent = 0);
 
 private:
-    void setupActions();
-    void setActionsEnabled(bool enabled);
-    void populateMenus(QObject *plugin);
-    void addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member);
-
-    CentralWidget *w;
-    QVector<QLabel*> statusLabel;
-    QList<QPluginLoader*> pluginLoaders;
+    void populatePluginsList(QList<QPluginLoader *> pluginLoaders);
 };
-#endif
 
-
-
-
+#endif // PLUGINDIALOG_H

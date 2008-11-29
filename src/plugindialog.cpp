@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
- *   Copyright (C) 2008 by Andrea Decorte                                  *
- *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,49 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include <QPluginLoader>
+#include <QHeaderView>
+#include "interfaces.h"
 
-#include <QMainWindow>
-#include "ui_mainwindow.h"
+#include "plugindialog.h"
 
-class CentralWidget;
-class QLabel;
-class QPluginLoader;
-class MainWindow : public QMainWindow, public Ui::MainWindow
+PluginDialog::PluginDialog(QList<QPluginLoader *> pluginLoaders, QWidget *parent)
+        : QDialog(parent), Ui::PluginDialog()
 {
-    Q_OBJECT
+    setupUi(this);
+    tableWidget->verticalHeader()->setShown(false);
+    tableWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    populatePluginsList(pluginLoaders);
+    tableWidget->resizeColumnsToContents();
+}
 
-public:
-    MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
-    void loadPlugins();
-
-protected:
-    void closeEvent(QCloseEvent *event);
-
-private slots:
-    void newFile();
-    void openFile();
-    void closeFile();
-    void showFindDialog();
-    void showPreferencesDialog();
-    void showAbout();
-    void showAboutPlugins();
-    void updateStatusBar(const QPointF &coordinate, int zoom);
-    void importNetworks();
-
-private:
-    void setupActions();
-    void setActionsEnabled(bool enabled);
-    void populateMenus(QObject *plugin);
-    void addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member);
-
-    CentralWidget *w;
-    QVector<QLabel*> statusLabel;
-    QList<QPluginLoader*> pluginLoaders;
-};
-#endif
-
-
-
-
+void PluginDialog::populatePluginsList(QList<QPluginLoader *> pluginLoaders)
+{
+    foreach(QPluginLoader *loader, pluginLoaders){
+        ImportInterface *plugin = qobject_cast<ImportInterface *>(loader->instance());
+        if(plugin){
+            int row = tableWidget->rowCount();
+            tableWidget->insertRow(row);
+            QTableWidgetItem *item = new QTableWidgetItem(plugin->name());
+            tableWidget->setItem(row, 0, item);
+            item = new QTableWidgetItem(plugin->author());
+            tableWidget->setItem(row, 1, item);
+            item = new QTableWidgetItem(plugin->description());
+            tableWidget->setItem(row, 2, item);
+        }
+    }
+}

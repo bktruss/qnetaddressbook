@@ -39,8 +39,7 @@
 #include "searchdialog.h"
 #include "preferencesdialog.h"
 #include "interfaces.h"
-
-#include <QDebug>
+#include "plugindialog.h"
 
 MainWindow::MainWindow( QWidget * parent, Qt::WFlags f) 
     : QMainWindow(parent, f)
@@ -88,12 +87,13 @@ void MainWindow::loadPlugins()
      pluginsDir.cd("plugins");
 
      foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-         QObject *plugin = loader.instance();
+         QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(fileName));
+         QObject *plugin = loader->instance();
          if (plugin) {
              populateMenus(plugin);
-             pluginLoaders.append(&loader);
-         }
+             pluginLoaders.append(loader);
+         } else
+             delete loader;
      }
      menuImport->setHidden(menuImport->actions().isEmpty());
  }
@@ -189,6 +189,12 @@ void MainWindow::showAbout()
                                                             "</ul></small>"));
 }
 
+void MainWindow::showAboutPlugins()
+{
+    PluginDialog dialog(pluginLoaders, this);
+    dialog.exec();
+}
+
 void MainWindow::updateStatusBar(const QPointF &coordinate, int zoom)
 {
     statusLabel[0]->setText(tr("Lon: %1").arg(coordinate.x(), 0, 'f', 6));
@@ -278,6 +284,9 @@ void MainWindow::setupActions()
     /* Help */
     actionAbout->setStatusTip(tr("Shows the about dialog"));
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+
+    actionAboutPlugins->setStatusTip(tr("Shows the plug-ins dialog"));
+    connect(actionAboutPlugins, SIGNAL(triggered()), this, SLOT(showAboutPlugins()));
 }
 
 void MainWindow::setActionsEnabled(bool enabled)

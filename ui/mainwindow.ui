@@ -77,6 +77,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionAboutPlugins"/>
    </widget>
    <widget class="QMenu" name="menuGo">
     <property name="title">
@@ -315,6 +316,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionAboutPlugins">
+   <property name="text">
+    <string>About Plugins...</string>
    </property>
   </action>
  </widget>
