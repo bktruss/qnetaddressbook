@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = QNetAddressBook
 VERSION = 0.0.1
-QT += sql network
+QT += sql \
+    network
 DESTDIR = ../bin
 MOC_DIR = ../build
 OBJECTS_DIR = ../build
@@ -27,7 +28,8 @@ HEADERS += mainwindow.h \
     viewpreferencespage.h \
     preferencesdialog.h \
     searchdialog.h \
-    interfaces.h
+    interfaces.h \
+    plugindialog.h
 SOURCES += main.cpp \
     mainwindow.cpp \
     centralwidget.cpp \
@@ -37,14 +39,16 @@ SOURCES += main.cpp \
     cachepreferencespage.cpp \
     viewpreferencespage.cpp \
     preferencesdialog.cpp \
-    searchdialog.cpp
+    searchdialog.cpp \
+    plugindialog.cpp
 FORMS += ../ui/mainwindow.ui \
     ../ui/networkdialog.ui \
     ../ui/proxypreferencespage.ui \
     ../ui/cachepreferencespage.ui \
     ../ui/viewpreferencespage.ui \
     ../ui/preferencesdialog.ui \
-    ../ui/searchdialog.ui
+    ../ui/searchdialog.ui \
+    ../ui/plugindialog.ui
 RESOURCES += ../resources/resources.qrc
 mac:ICON = ../resources/images/icon.icns
 win32:RC_FILE = ../resources/icon.rc
