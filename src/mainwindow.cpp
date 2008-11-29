@@ -76,27 +76,27 @@ void MainWindow::loadPlugins()
 {
     QDir pluginsDir = QDir(qApp->applicationDirPath());
 
- #if defined(Q_OS_WIN)
-     if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-         pluginsDir.cdUp();
- #elif defined(Q_OS_MAC)
-     if (pluginsDir.dirName() == "MacOS") {
-         pluginsDir.cdUp();
-     }
- #endif
-     pluginsDir.cd("plugins");
+#if defined(Q_OS_WIN)
+    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+        pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (pluginsDir.dirName() == "MacOS") {
+        pluginsDir.cdUp();
+    }
+#endif
+    pluginsDir.cd("plugins");
 
-     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-         QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(fileName));
-         QObject *plugin = loader->instance();
-         if (plugin) {
-             populateMenus(plugin);
-             pluginLoaders.append(loader);
-         } else
-             delete loader;
-     }
-     menuImport->setHidden(menuImport->actions().isEmpty());
- }
+    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+        QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(fileName));
+        QObject *plugin = loader->instance();
+        if (plugin) {
+            populateMenus(plugin);
+            pluginLoaders.append(loader);
+        } else
+            delete loader;
+    }
+    menuImport->setHidden(menuImport->actions().isEmpty());
+}
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -212,14 +212,14 @@ void MainWindow::importNetworks()
         return;
     QFile file(filename);
     if(file.open(QIODevice::ReadOnly)){
-       QList<Network> networks = importInterface->importNetworks(file);
-       if(networks.isEmpty() && !importInterface->errorText().isEmpty()){
-           QMessageBox::warning(this, tr("Error importing networks"), importInterface->errorText());
-           return;
-       }
-       w->importNetworks(networks);
-   }
-   file.close();
+        QList<Network> networks = importInterface->importNetworks(file);
+        if(networks.isEmpty() && !importInterface->errorText().isEmpty()){
+            QMessageBox::warning(this, tr("Error importing networks"), importInterface->errorText());
+            return;
+        }
+        w->importNetworks(networks);
+    }
+    file.close();
 }
 
 void MainWindow::setupActions()
@@ -309,15 +309,15 @@ void MainWindow::setActionsEnabled(bool enabled)
 }
 
 void MainWindow::populateMenus(QObject *plugin)
- {
-     ImportInterface *importInterface = qobject_cast<ImportInterface *>(plugin);
-     if (importInterface)
-         addToMenu(plugin, importInterface->name(), menuImport, SLOT(importNetworks()));
- }
+{
+    ImportInterface *importInterface = qobject_cast<ImportInterface *>(plugin);
+    if (importInterface)
+        addToMenu(plugin, importInterface->name(), menuImport, SLOT(importNetworks()));
+}
 
- void MainWindow::addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member)
- {
-     QAction *action = new QAction(text, plugin);
-     connect(action, SIGNAL(triggered()), this, member);
-     menu->addAction(action);
- }
+void MainWindow::addToMenu(QObject *plugin, const QString &text, QMenu *menu, const char *member)
+{
+    QAction *action = new QAction(text, plugin);
+    connect(action, SIGNAL(triggered()), this, member);
+    menu->addAction(action);
+}

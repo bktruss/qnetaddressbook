@@ -24,7 +24,7 @@
 #include "plugindialog.h"
 
 PluginDialog::PluginDialog(QList<QPluginLoader *> pluginLoaders, QWidget *parent)
-        : QDialog(parent), Ui::PluginDialog()
+    : QDialog(parent), Ui::PluginDialog()
 {
     setupUi(this);
     tableWidget->verticalHeader()->setShown(false);
