@@ -50,6 +50,7 @@ QString KismetCSV::fileNameFilter() const
 
 QList<Network> KismetCSV::importNetworks(QIODevice &device)
 {
+    error.clear();
     QTextStream stream(&device);
     QList<Network> networks;
     if (stream.readLine() != "Network;NetType;ESSID;BSSID;Info;Channel;Cloaked;Encryption;Decrypted;MaxRate;MaxSeenRate;Beacon;LLC;Data;Crypt;Weak;Total;Carrier;Encoding;FirstTime;LastTime;BestQuality;BestSignal;BestNoise;GPSMinLat;GPSMinLon;GPSMinAlt;GPSMinSpd;GPSMaxLat;GPSMaxLon;GPSMaxAlt;GPSMaxSpd;GPSBestLat;GPSBestLon;GPSBestAlt;DataSize;IPType;IP;"){
@@ -67,7 +68,7 @@ QList<Network> KismetCSV::importNetworks(QIODevice &device)
 
 QString KismetCSV::errorText() const
 {
-    return QString();
+    return error;
 }
 
 bool KismetCSV::importNetwork(const QString &line, Network *network)
