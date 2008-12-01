@@ -50,6 +50,7 @@ QString Netstumbler::fileNameFilter() const
 
 QList<Network> Netstumbler::importNetworks(QIODevice &device)
 {
+    error.clear();
     QList<Network> networks;
     /* NS1 File format http://www.stumbler.net/ns1files.html */
     QDataStream stream(&device);
@@ -66,6 +67,7 @@ QList<Network> Netstumbler::importNetworks(QIODevice &device)
     /* Verify singature and file version */
     if (QString(signature) != "NetS" || version != 12){
         delete[] signature;
+        error = tr("Invalid file format.");
         return networks;
     }
     quint32 apCount;
@@ -85,7 +87,7 @@ QString Netstumbler::errorText() const
 
 bool Netstumbler::importNetwork(QDataStream &stream, Network *network)
 {
-    bool error = false;
+    bool checkError = false;
     // SSID
     quint8 ssidLength = 0;
     stream >> ssidLength;
@@ -95,7 +97,7 @@ bool Netstumbler::importNetwork(QDataStream &stream, Network *network)
     QString SSID = rawSsid;
     delete[] rawSsid;
     if(SSID.isEmpty())
-        error = true;
+        checkError = true;
 
     // BSSID
     quint8 rawBssid[6];
@@ -129,7 +131,7 @@ bool Netstumbler::importNetwork(QDataStream &stream, Network *network)
     double longitude;
     stream >> latitude >> longitude;
     if (latitude == 0 || longitude == 0)
-        error = true;
+        checkError = true;
 
     // Skip useless data
     quint32 dataCount;
@@ -158,7 +160,7 @@ bool Netstumbler::importNetwork(QDataStream &stream, Network *network)
     for(quint32 i = 0; i < ieLength; i++)
         stream.skipRawData(1);
 
-    if (error)
+    if (checkError)
         return false;
     else {
         network->essid = SSID;

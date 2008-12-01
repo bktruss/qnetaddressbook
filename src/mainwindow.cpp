@@ -213,7 +213,7 @@ void MainWindow::importNetworks()
     QFile file(filename);
     if(file.open(QIODevice::ReadOnly)){
         QList<Network> networks = importInterface->importNetworks(file);
-        if(networks.isEmpty() && !importInterface->errorText().isEmpty()){
+        if(!importInterface->errorText().isEmpty()){
             QMessageBox::warning(this, tr("Error importing networks"), importInterface->errorText());
             return;
         }
