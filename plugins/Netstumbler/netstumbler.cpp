@@ -111,7 +111,7 @@ bool Netstumbler::importNetwork(QDataStream &stream, Network *network)
     // SIGNAL
     qint32 signal;
     stream >> signal;
-    signal = abs(signal);
+    signal = qAbs(signal);
     stream.skipRawData(8);
 
     // Encryption
