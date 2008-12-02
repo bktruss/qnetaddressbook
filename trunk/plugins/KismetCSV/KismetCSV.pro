@@ -5,4 +5,4 @@ INCLUDEPATH  += ../../src
 HEADERS       = kismetcsv.h
 SOURCES       = kismetcsv.cpp
 TARGET        = $$qtLibraryTarget(importkismetcsv)
-DESTDIR       = ../../bin/plugins
+DESTDIR       = ../../bin/PlugIns

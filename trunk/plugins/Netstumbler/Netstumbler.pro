@@ -5,4 +5,4 @@ INCLUDEPATH  += ../../src
 HEADERS       = netstumbler.h
 SOURCES       = netstumbler.cpp
 TARGET        = $$qtLibraryTarget(importnetstumbler)
-DESTDIR       = ../../bin/plugins
+DESTDIR       = ../../bin/PlugIns

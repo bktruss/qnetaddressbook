@@ -80,11 +80,10 @@ void MainWindow::loadPlugins()
     if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
         pluginsDir.cdUp();
 #elif defined(Q_OS_MAC)
-    if (pluginsDir.dirName() == "MacOS") {
+    if (pluginsDir.dirName() == "MacOS")
         pluginsDir.cdUp();
-    }
 #endif
-    pluginsDir.cd("plugins");
+    pluginsDir.cd("PlugIns");
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader *loader = new QPluginLoader(pluginsDir.absoluteFilePath(fileName));
