@@ -36,12 +36,14 @@ public:
     MainWindow( QWidget * parent = 0, Qt::WFlags f = 0 );
     void loadPlugins();
 
+public slots:
+    void openFile(const QString &file = QString());
+
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
     void newFile();
-    void openFile();
     void closeFile();
     void showFindDialog();
     void showPreferencesDialog();

@@ -97,6 +97,32 @@ void MainWindow::loadPlugins()
     menuImport->setHidden(menuImport->actions().isEmpty());
 }
 
+void MainWindow::openFile(const QString &file)
+{
+    QString filename = file;
+    if (filename.isEmpty())
+         filename = QFileDialog::getOpenFileName(this, tr("Open Network Database File"), QString(), tr("Network Database (*.db)"));
+
+    if(filename.isEmpty())
+        return;
+
+    if(!QFile::exists(filename)){
+        QMessageBox::warning(this, tr("Error"), tr("Error opening file: No such file or directory."));
+        return;
+    }
+    
+    QSqlDatabase::database().close();
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(filename);
+    if(db.open()){
+        w->clearNetworks();
+        w->loadNetworks();
+        setActionsEnabled(true);
+    }
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings;
@@ -135,23 +161,6 @@ void MainWindow::newFile()
     db.commit();
 
     w->clearNetworks();
-    setActionsEnabled(true);
-}
-
-void MainWindow::openFile()
-{
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open Network Database File"), QString(), tr("Network Database (*.db)"));
-    if(filename.isEmpty())
-        return;
-
-    QSqlDatabase::database().close();
-    QSqlDatabase::removeDatabase("qt_sql_default_connection");
-
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(filename);
-    db.open();
-    w->clearNetworks();
-    w->loadNetworks();
     setActionsEnabled(true);
 }
 
