@@ -21,6 +21,7 @@
 #include <QSplashScreen>
 #include <QPixmap>
 #include <QDir>
+#include <QFile>
 
 #include "mainwindow.h"
 
@@ -31,7 +32,18 @@ int main(int argc, char ** argv)
     QCoreApplication::setApplicationName("QNetAddressBook");
 
     QApplication app( argc, argv );
+#ifdef Q_WS_MAC
+    QDir dir(QApplication::applicationDirPath());
+    dir.cdUp();
+    dir.cd("PlugIns");
+    QApplication::setLibraryPaths(QStringList(dir.absolutePath()));
+#endif
     app.setWindowIcon(QIcon(":/images/icon.png"));
+    QStringList args = QCoreApplication::arguments();
+    if(args.size() > 2){
+        qCritical("Error: Bad arguments number.");
+        return -1;
+    }
 
     QSplashScreen splash(QPixmap(":images/splash.png"));
     splash.show();
@@ -43,6 +55,12 @@ int main(int argc, char ** argv)
     splash.showMessage(QObject::tr("Loading Plug-ins..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
     app.processEvents();
     win.loadPlugins();
+
+    if (args.size() == 2){
+        splash.showMessage(QObject::tr("Opening file %1...").arg(args.at(1)), Qt::AlignRight | Qt::AlignBottom, Qt::white);
+        app.processEvents();
+        win.openFile(args.at(1));
+    }
 
     splash.showMessage(QObject::tr("Starting up..."), Qt::AlignRight | Qt::AlignBottom, Qt::white);
     app.processEvents();
