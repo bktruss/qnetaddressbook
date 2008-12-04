@@ -17,21 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QMessageBox>
 #include <QRegExp>
 
-#include "searchdialog.h"
+#include "networksmodel.h"
 
-#include <QDebug>
+#include "searchdialog.h"
 
 SearchDialog::SearchDialog(QWidget *parent) :
         QDialog(parent), Ui::SearchDialog()
 {
-    model = new QSqlQueryModel(this);
+    model = new NetworksModel(this);
 
     setupUi(this);
     checkBoxes = qFindChildren<QCheckBox *>(this, QRegExp(".+Check"));
@@ -67,7 +66,7 @@ void SearchDialog::performSearch()
     if (bssidCheck->isChecked())
         query.bindValue(":bssid", bssidEdit->text());
     if (essidCheck->isChecked())
-        query.bindValue(":essid", essidEdit->text());
+        query.bindValue(":essid", essidEdit->text().replace('*', '%'));
     if (channelCheck->isChecked())
         query.bindValue(":channel", channelSpin->value());
     if (encryptionCheck->isChecked())
@@ -81,6 +80,7 @@ void SearchDialog::performSearch()
     }
 
     model->setQuery(query);
+    setupModel();
     resultTable->resizeColumnsToContents();
     resultTable->setVisible(true);
 }
@@ -102,4 +102,15 @@ void SearchDialog::validate()
             return;
         }
     }
+}
+
+void SearchDialog::setupModel()
+{
+    model->setHeaderData(0, Qt::Horizontal, tr("BSSID"));
+    model->setHeaderData(1, Qt::Horizontal, tr("ESSID"));
+    model->setHeaderData(2, Qt::Horizontal, tr("Channel"));
+    model->setHeaderData(3, Qt::Horizontal, tr("Encryption"));
+    model->setHeaderData(4, Qt::Horizontal, tr("Signal"));
+    model->setHeaderData(5, Qt::Horizontal, tr("Longitude"));
+    model->setHeaderData(6, Qt::Horizontal, tr("Latitude"));
 }

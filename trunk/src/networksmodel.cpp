@@ -17,34 +17,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SEARCHDIALOG_H
-#define SEARCHDIALOG_H
+#include "networksmodel.h"
 
-#include <QtGui/QDialog>
-#include "ui_searchdialog.h"
-
-class QSqlQueryModel;
-class QCheckBox;
-class SearchDialog : public QDialog, Ui::SearchDialog
+NetworksModel::NetworksModel(QObject *parent)
+        : QSqlQueryModel(parent)
 {
-    Q_OBJECT
+}
 
-public:
-    SearchDialog(QWidget *parent = 0);
-    QSizeF selectedCoordinates() const; // maybe better with signal/slot
-
-private slots:
-    void performSearch();
-    void networkSelected(const QModelIndex &index);
-    void validate();
-
-signals:
-    void networkSelected(const QPointF &coordinate);
-
-private:
-    void setupModel();
-
-    QSqlQueryModel *model;
-    QList<QCheckBox *> checkBoxes;
-};
-#endif // SEARCHDIALOG_H
+QVariant NetworksModel::data(const QModelIndex &index, int role) const
+ {
+     QVariant value = QSqlQueryModel::data(index, role);
+     if (value.isValid() && role == Qt::DisplayRole) {
+         if (index.column() == 3)
+             switch (value.toInt()){
+             case 0:
+             return tr("None");
+             case 1:
+             return QString("WEP");
+             case 2:
+             return QString("WPA");
+             case 3:
+             return QString("WPA2");
+         }
+     }
+     return value;
+ }

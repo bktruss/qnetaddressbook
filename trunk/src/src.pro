@@ -29,7 +29,8 @@ HEADERS += mainwindow.h \
     preferencesdialog.h \
     searchdialog.h \
     interfaces.h \
-    plugindialog.h
+    plugindialog.h \
+    networksmodel.h
 SOURCES += main.cpp \
     mainwindow.cpp \
     centralwidget.cpp \
@@ -40,7 +41,8 @@ SOURCES += main.cpp \
     viewpreferencespage.cpp \
     preferencesdialog.cpp \
     searchdialog.cpp \
-    plugindialog.cpp
+    plugindialog.cpp \
+    networksmodel.cpp
 FORMS += ../ui/mainwindow.ui \
     ../ui/networkdialog.ui \
     ../ui/proxypreferencespage.ui \
@@ -50,9 +52,10 @@ FORMS += ../ui/mainwindow.ui \
     ../ui/searchdialog.ui \
     ../ui/plugindialog.ui
 RESOURCES += ../resources/resources.qrc
-mac {
+mac { 
     ICON = ../resources/images/icon.icns
-    QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
-    CONFIG += x86 ppc
+    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
+    CONFIG += x86 \
+        ppc
 }
 win32:RC_FILE = ../resources/icon.rc
