@@ -17,34 +17,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SEARCHDIALOG_H
-#define SEARCHDIALOG_H
+#ifndef NETWORKSMODEL_H
+#define NETWORKSMODEL_H
 
-#include <QtGui/QDialog>
-#include "ui_searchdialog.h"
+#include <QSqlQueryModel>
 
-class QSqlQueryModel;
-class QCheckBox;
-class SearchDialog : public QDialog, Ui::SearchDialog
+class NetworksModel : public QSqlQueryModel
 {
     Q_OBJECT
-
 public:
-    SearchDialog(QWidget *parent = 0);
-    QSizeF selectedCoordinates() const; // maybe better with signal/slot
+    NetworksModel(QObject *parent = 0);
 
-private slots:
-    void performSearch();
-    void networkSelected(const QModelIndex &index);
-    void validate();
-
-signals:
-    void networkSelected(const QPointF &coordinate);
-
-private:
-    void setupModel();
-
-    QSqlQueryModel *model;
-    QList<QCheckBox *> checkBoxes;
+    QVariant data(const QModelIndex &item, int role) const;
 };
-#endif // SEARCHDIALOG_H
+
+#endif // NETWORKSMODEL_H
