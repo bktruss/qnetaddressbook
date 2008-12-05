@@ -31,7 +31,7 @@
 #include "maplayer.h"
 #include "geometrylayer.h"
 #include "geometry.h"
-#include "circlepoint.h"
+#include "imagepoint.h"
 
 #include "networkdialog.h"
 
@@ -227,23 +227,22 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 
 void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name)
 {
-    QPen pen;
+    QPixmap *pixmap;
     switch(encryption){
                 case None:
-        pen.setColor(QColor(Qt::red));
+        pixmap = new QPixmap(":/images/placeholder_open.png");
         break;
                 case WEP:
-        pen.setColor(QColor(Qt::yellow));
+        pixmap = new QPixmap(":/images/placeholder_wep.png");
         break;
                 case WPA:
-        pen.setColor(QColor(Qt::blue));
+        pixmap = new QPixmap(":/images/placeholder_wpa.png");
         break;
                 case WPA2:
-        pen.setColor(QColor(Qt::green));
+        pixmap = new QPixmap(":/images/placeholder_wpa2.png");
     }
-    pen.setWidth(3);
 
-    CirclePoint *network = new CirclePoint(x, y, 15, name, qmapcontrol::Point::Middle, &pen);
+    ImagePoint *network = new ImagePoint(x, y, pixmap, name, qmapcontrol::Point::Middle);
     connect(network, SIGNAL(geometryClicked(Geometry *, QPoint)), this, SLOT(showNetwork(Geometry *, QPoint)));
     layers[encryption]->addGeometry(network);
 }
