@@ -227,7 +227,7 @@ void CentralWidget::showNetwork(Geometry *geometry, QPoint /*point*/)
 
 void CentralWidget::addNetwork(NetworkEncryption encryption, qreal x, qreal y, QString name)
 {
-    QPixmap *pixmap;
+    QPixmap *pixmap = NULL;
     switch(encryption){
                 case None:
         pixmap = new QPixmap(":/images/placeholder_open.png");
