@@ -1,6 +1,6 @@
 TEMPLATE = app
-TARGET = QNetAddressBook
-VERSION = 0.0.1
+TARGET = qnetaddressbook
+VERSION = 1.2rc1
 QT += sql \
     network
 DESTDIR = ../bin
@@ -52,10 +52,14 @@ FORMS += ../ui/mainwindow.ui \
     ../ui/searchdialog.ui \
     ../ui/plugindialog.ui
 RESOURCES += ../resources/resources.qrc
-mac { 
+macx {
+    TARGET = QNetAddressBook
     ICON = ../resources/images/icon.icns
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     CONFIG += x86 \
         ppc
 }
-win32:RC_FILE = ../resources/icon.rc
+win32 {
+    TARGET = QNetAddressBook.exe
+    RC_FILE = ../resources/icon.rc
+}
