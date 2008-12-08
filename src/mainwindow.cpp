@@ -1,8 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2008 by Lorenzo Masini                                  *
  *   lorenxo86@gmail.com                                                   *
- *   Copyright (C) 2008 by Andrea Decorte                                  *
- *   adecorte@gmail.com                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -187,14 +185,19 @@ void MainWindow::showPreferencesDialog()
 
 void MainWindow::showAbout()
 {
-    QMessageBox::about(this, tr("About NetAddressBook"), tr("<h1>NetAddressBook "VERSION"</h1>"
+    QMessageBox::about(this, tr("About NetAddressBook"), tr("<h1>NetAddressBook %1</h1>"
                                                             "<h3>An addressbook for wireless networks</h3>"
                                                             "<small>Copyleft 2008 Lorenzo Masini</small>"
-                                                            "<h3>Authors:</h3>"
+                                                            "<h4>Authors:</h4>"
                                                             "<small><ul>"
                                                             "<li>Lorenzo \"Il Rugginoso\" Masini &lt;<a href=\"mailto:lorenxo86@gmail.com\">lorenxo86@gmail.com</a>&gt;</li>"
                                                             "<li>Andrea \"Klenje\" Decorte &lt;<a href=\"mailto:adecorte@gmail.com\">adecorte@gmail.com</a>&gt;</li>"
-                                                            "</ul></small>"));
+                                                            "</ul></small>"
+                                                            "<h4>Graphics:</h4>"
+                                                            "<small><ul>"
+                                                            "<li>Oxygen team (<a href=\"http://www.oxygen-icons.org/\">http://www.oxygen-icons.org/</a>)</li>"
+                                                            "<li>Jacopo \"Absolute0\" Dainelli &lt;<a href=\"mailto:jacopo.dainelli@gmail.com\">jacopo.dainelli@gmail.com</a>&gt;</li>"
+                                                            "</ul></small>").arg(VERSION));
 }
 
 void MainWindow::showAboutPlugins()
