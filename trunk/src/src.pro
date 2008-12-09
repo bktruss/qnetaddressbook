@@ -60,6 +60,12 @@ macx {
         ppc
 }
 win32 {
-    TARGET = QNetAddressBook.exe
+    TARGET = QNetAddressBook
     RC_FILE = ../resources/icon.rc
+}
+!macx:unix {
+    target.path = $${PREFIX}/bin/
+    PLUGINS_DIR_STR = '\\"$${PREFIX}/lib/qnetaddressbook/\\"'
+    DEFINES *= PLUGINS_DIR=\"$${PLUGINS_DIR_STR}\"
+    INSTALLS += target
 }
