@@ -80,6 +80,8 @@ void MainWindow::loadPlugins()
 #elif defined(Q_OS_MAC)
     if (pluginsDir.dirName() == "MacOS")
         pluginsDir.cdUp();
+#elif defined(PLUGINS_DIR)
+    pluginsDir = QDir(PLUGINS_DIR);
 #endif
     pluginsDir.cd("PlugIns");
 
