@@ -38,7 +38,7 @@ int main(int argc, char ** argv)
     dir.cd("PlugIns");
     QApplication::setLibraryPaths(QStringList(dir.absolutePath()));
 #endif
-    app.setWindowIcon(QIcon(":/images/icon.png"));
+    app.setWindowIcon(QIcon(":/images/qnetaddressbook.png"));
     QStringList args = QCoreApplication::arguments();
     if(args.size() > 2){
         qCritical("Error: Bad arguments number.");
