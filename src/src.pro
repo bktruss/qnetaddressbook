@@ -54,7 +54,7 @@ FORMS += ../ui/mainwindow.ui \
 RESOURCES += ../resources/resources.qrc
 macx {
     TARGET = QNetAddressBook
-    ICON = ../resources/images/icon.icns
+    ICON = ../resources/images/qnetaddressbook.icns
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.4u.sdk
     CONFIG += x86 \
         ppc
