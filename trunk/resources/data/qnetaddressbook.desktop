@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.2rc1
+Type=Application
+Name=QNetAddressBook
+Comment=Map-based addressbook to store wireless networks
+TryExec=qnetaddressbook
+Exec=qnetaddressbook %f
+Icon=qnetaddressbook
+Categories=Network

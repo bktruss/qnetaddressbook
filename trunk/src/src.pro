@@ -67,5 +67,9 @@ win32 {
     target.path = $${PREFIX}/bin/
     PLUGINS_DIR_STR = '\\"$${PREFIX}/lib/qnetaddressbook/\\"'
     DEFINES *= PLUGINS_DIR=\"$${PLUGINS_DIR_STR}\"
-    INSTALLS += target
+    data.files = ../resources/data/qnetaddressbook.desktop
+    data.path = $${PREFIX}/share/applications/
+    icon.files = ../resources/data/qnetaddressbook.xpm
+    icon.path = $${PREFIX}/share/pixmaps
+    INSTALLS += target data icon
 }
