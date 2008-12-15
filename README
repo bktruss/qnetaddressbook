@@ -1,0 +1,20 @@
+Install instructions
+
+Linux
+$ qmake -config release PREFIX=/usr/local
+$ make
+# make install
+# ldconfig
+
+MacOS X
+$ qmake -config release -spec macx-g++
+$ make
+$ ./scripts/macdeploy.sh bin/QNetAddressBook.app
+
+Windows
+$ qmake -config release
+$ make
+
+
+Requirements
+Qt >= 4.4.x
