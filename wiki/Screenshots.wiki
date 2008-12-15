@@ -3,7 +3,7 @@
 
 = Screenshots =
 
-== Version 0.0.1 ==
+== Version 1.2rc1 ==
 
 ===X11 ===
 [http://qnetaddressbook.googlecode.com/svn/wiki/screenshots/qnetaddressbook-x11.png]
