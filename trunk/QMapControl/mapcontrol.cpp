@@ -283,6 +283,20 @@ namespace qmapcontrol
 // 	emit(mouseEventCoordinate(evnt, clickToWorldCoordinate(evnt->pos())));
 	}
 
+        void MapControl::wheelEvent(QWheelEvent *evnt)
+        {
+            int numDegrees = evnt->delta() / 8;
+            int numSteps = numDegrees / 15;
+
+            if (numSteps > 0){
+                for (int i = 0; i < numSteps; ++i)
+                    zoomIn();
+            } else {
+                for (int i = 0; i < qAbs(numSteps); ++i)
+                    zoomOut();
+            }
+        }
+
 	QPointF MapControl::clickToWorldCoordinate(QPoint click)
 	{
 	// click coordinate to image coordinate

@@ -243,7 +243,7 @@ namespace qmapcontrol
 			void mousePressEvent ( QMouseEvent* evnt );
 			void mouseReleaseEvent ( QMouseEvent* evnt );
 			void mouseMoveEvent ( QMouseEvent* evnt );
-
+                        void wheelEvent( QWheelEvent *evnt);
 
 		signals:
 // 		void mouseEvent(const QMouseEvent* evnt);
