@@ -295,6 +295,7 @@ namespace qmapcontrol
                 for (int i = 0; i < qAbs(numSteps); ++i)
                     zoomOut();
             }
+            evnt->accept();
         }
 
 	QPointF MapControl::clickToWorldCoordinate(QPoint click)
