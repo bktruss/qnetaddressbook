@@ -121,20 +121,40 @@ void CentralWidget::addNetwork()
 void CentralWidget::importNetworks(QList<Network> networks)
 {
     foreach(Network network, networks){
-        QSqlQuery query;
-        query.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,:comment,:encryption)");
-        query.bindValue(":essid", network.essid);
-        query.bindValue(":bssid", network.bssid);
-        query.bindValue(":channel", network.channel);
-        query.bindValue(":signal", network.signal);
-        query.bindValue(":lat", network.lat);
-        query.bindValue(":lon", network.lon);
-        query.bindValue(":encryption", network.encryption);
-        if(!query.exec()){
-            if(query.lastError().number() != 19){ // during import it's possible to have duplicated entries. This silently don't insert the duplicated rows.
-                QMessageBox::warning(this, query.lastError().driverText(), query.lastError().databaseText());
-                return;
-            }
+        QSqlQuery searchQuery;
+        QSqlQuery importQuery;
+        searchQuery.prepare("SELECT signal, lat, lon FROM networks WHERE bssid = :bssid");
+        searchQuery.bindValue(":bssid", network.bssid);
+        if (!searchQuery.exec()){
+            QMessageBox::warning(this, searchQuery.lastError().driverText(), searchQuery.lastError().databaseText());
+            return;
+        }
+
+        if(searchQuery.next()){ // The network is already in the database
+            if(network.signal > searchQuery.value(0).toInt()){ // The network to import has a signal major than the one in the database
+                importQuery.prepare("UPDATE networks SET essid = :essid, channel = :channel, signal = :signal, lat = :lat, lon = :lon, encryption = :encryption WHERE bssid = :bssid");
+                importQuery.bindValue(":essid", network.essid);
+                importQuery.bindValue(":channel", network.channel);
+                importQuery.bindValue(":signal", network.signal);
+                importQuery.bindValue(":lat", network.lat);
+                importQuery.bindValue(":lon", network.lon);
+                importQuery.bindValue(":encryption", network.encryption);
+                importQuery.bindValue(":bssid", network.bssid);
+            } else  // The netowork to import hasn't a signal major than the one in the database
+                continue;
+        } else {  // The network to import isn't in the database
+            importQuery.prepare("INSERT INTO networks (essid,bssid,channel,signal,lat,lon,comment,encryption) VALUES (:essid,:bssid,:channel,:signal,:lat,:lon,:comment,:encryption)");
+            importQuery.bindValue(":essid", network.essid);
+            importQuery.bindValue(":bssid", network.bssid);
+            importQuery.bindValue(":channel", network.channel);
+            importQuery.bindValue(":signal", network.signal);
+            importQuery.bindValue(":lat", network.lat);
+            importQuery.bindValue(":lon", network.lon);
+            importQuery.bindValue(":encryption", network.encryption);
+        }
+        if (!importQuery.exec()){
+            QMessageBox::warning(this, importQuery.lastError().driverText(), importQuery.lastError().databaseText());
+            return;
         }
     }
     clearNetworks();
