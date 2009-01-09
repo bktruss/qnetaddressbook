@@ -21,9 +21,11 @@
 #include <QSplashScreen>
 #include <QPixmap>
 #include <QDir>
-#include <QFile>
+#include <QFileInfo>
 
 #include "mainwindow.h"
+
+char *usage(const QString &programname);
 
 int main(int argc, char ** argv)
 {
@@ -41,7 +43,7 @@ int main(int argc, char ** argv)
     app.setWindowIcon(QIcon(":/images/qnetaddressbook.png"));
     QStringList args = QCoreApplication::arguments();
     if(args.size() > 2){
-        qCritical("Error: Bad arguments number.");
+        qCritical(usage(args.at(0)));
         return -1;
     }
 
@@ -68,6 +70,17 @@ int main(int argc, char ** argv)
 
     splash.finish(&win);
 
+    if (args.size() == 1)
+        win.newFile();
+    
     app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
     return app.exec();
+}
+
+char *usage (const QString &programname)
+{
+    QFileInfo fileInfo(programname);
+
+    QString help = QObject::tr("Bad arguments number.\nUsage:\n\t%1 [filename]\n").arg(fileInfo.baseName());
+    return help.toLocal8Bit().data();
 }

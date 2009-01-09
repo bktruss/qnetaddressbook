@@ -97,6 +97,36 @@ void MainWindow::loadPlugins()
     menuImport->setHidden(menuImport->actions().isEmpty());
 }
 
+void MainWindow::newFile()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("New Network Databse"), QDir::homePath() + QDir::separator() + tr("untitled.db"), tr("Network Database (*.db)"));
+    if(filename.isEmpty())
+        return;
+
+    QSqlDatabase::database().close();
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(filename);
+    if(!db.open()){
+        QMessageBox::warning(this, db.lastError().driverText(), db.lastError().databaseText());
+        return;
+    }
+
+    db.transaction();
+    QSqlQuery tableQuery;
+    if(!tableQuery.exec("CREATE TABLE \"networks\" (\"essid\" TEXT NOT NULL, \"bssid\" TEXT NOT NULL, \"channel\" INTEGER NOT NULL, \"signal\" INTEGER NOT NULL, \"lat\" REAL NOT NULL, \"lon\" REAL NOT NULL, \"comment\" TEXT, \"encryption\" INTEGER  NOT NULL  DEFAULT (0))"))
+        db.rollback();
+
+    QSqlQuery keyQuery;
+    if(!tableQuery.exec("CREATE UNIQUE INDEX \"bssid\" on networks (bssid ASC)"))
+        db.rollback();
+    db.commit();
+
+    w->clearNetworks();
+    setActionsEnabled(true);
+}
+
 void MainWindow::openFile(const QString &file)
 {
     QString filename = file;
@@ -132,36 +162,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("mainwindow/state", saveState());
 #endif
     QMainWindow::closeEvent(event);
-}
-
-void MainWindow::newFile()
-{
-    QString filename = QFileDialog::getSaveFileName(this, tr("New Network Databse"), QDir::homePath() + QDir::separator() + tr("untitled.db"), tr("Network Database (*.db)"));
-    if(filename.isEmpty())
-        return;
-
-    QSqlDatabase::database().close();
-    QSqlDatabase::removeDatabase("qt_sql_default_connection");
-
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(filename);
-    if(!db.open()){
-        QMessageBox::warning(this, db.lastError().driverText(), db.lastError().databaseText());
-        return;
-    }
-
-    db.transaction();
-    QSqlQuery tableQuery;
-    if(!tableQuery.exec("CREATE TABLE \"networks\" (\"essid\" TEXT NOT NULL, \"bssid\" TEXT NOT NULL, \"channel\" INTEGER NOT NULL, \"signal\" INTEGER NOT NULL, \"lat\" REAL NOT NULL, \"lon\" REAL NOT NULL, \"comment\" TEXT, \"encryption\" INTEGER  NOT NULL  DEFAULT (0))"))
-        db.rollback();
-
-    QSqlQuery keyQuery;
-    if(!tableQuery.exec("CREATE UNIQUE INDEX \"bssid\" on networks (bssid ASC)"))
-        db.rollback();
-    db.commit();
-
-    w->clearNetworks();
-    setActionsEnabled(true);
 }
 
 void MainWindow::closeFile()

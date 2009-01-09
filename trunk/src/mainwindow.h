@@ -35,13 +35,13 @@ public:
     void loadPlugins();
 
 public slots:
+    void newFile();
     void openFile(const QString &file = QString());
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
-    void newFile();
     void closeFile();
     void showFindDialog();
     void showPreferencesDialog();
